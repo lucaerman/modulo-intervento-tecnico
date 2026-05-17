@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modulo Rapporto Tecnico</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -33,6 +34,41 @@
             border-radius: 8px;
             padding: 25px;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        }
+
+        /* Pulsantiera Azioni */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, var(--neon-accent-green), #00b359);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(0, 255, 135, 0.6);
+        }
+
+        .btn-pdf:active {
+            transform: translateY(0);
         }
 
         /* Header */
@@ -245,14 +281,21 @@
 </head>
 <body>
 
-<div class="container">
+    <div class="action-bar">
+        <button class="btn-pdf" onclick="generaPDF()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Converti e Salva PDF
+        </button>
+    </div>
+
+<div class="container" id="modulo-tecnico">
 
     <div class="header">
         <div class="header-top">
             <h1 class="title">Modulo Rapporto Tecnico per Impianto Termico con Potenza Nom. al Focolare &lt; 35 kW</h1>
             <div class="form-group" style="min-width: 150px;">
                 <label>N. Ticket</label>
-                <input type="text" placeholder="Es. 12345">
+                <input type="text" id="txt-ticket" placeholder="Es. 12345">
             </div>
         </div>
         
@@ -281,7 +324,7 @@
         <div class="grid-2">
             <div class="form-group">
                 <label>Cognome / Nome</label>
-                <input type="text">
+                <input type="text" id="txt-cliente">
             </div>
             <div class="form-group">
                 <label>Indirizzo</label>
@@ -584,5 +627,35 @@
 
 </div>
 
+    <div class="action-bar" style="margin-top: 20px; margin-bottom: 40px;">
+        <button class="btn-pdf" onclick="generaPDF()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Converti e Salva PDF
+        </button>
+    </div>
+
+    <script>
+        function generaPDF() {
+            // Recupera il valore del ticket e del cliente per personalizzare il nome del file
+            const ticket = document.getElementById('txt-ticket').value || 'N-A';
+            const cliente = document.getElementById('txt-cliente').value.trim().replace(/\s+/g, '_') || 'Cliente';
+            const nomeFile = `Rapporto_Tecnico_Ticket_${ticket}_${cliente}.pdf`;
+
+            // Seleziona l'elemento del modulo da convertire
+            const elemento = document.getElementById('modulo-tecnico');
+
+            // Configurazione opzioni per html2pdf.js
+            const opzioni = {
+                margin:       10,
+                filename:     nomeFile,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#161b22' },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Generazione del PDF e attivazione del download
+            html2pdf().set(opzioni).from(elemento).save();
+        }
+    </script>
 </body>
 </html>
