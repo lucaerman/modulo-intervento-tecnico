@@ -1,825 +1,419 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modulo Rapporto Tecnico</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modulo Rapporto Tecnico</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#1d1d1f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon.png">
 
-    <link rel="apple-touch-icon" href="icon.png">
-
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Rapporto Tecnico Impianti">
-    <meta property="og:description" content="Modulo digitale per la compilazione e stampa dei rapporti tecnici d'intervento.">
-    <meta property="og:image" content="icon.png">
-    <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --border-color: #cccccc;
-            --text-color: #1a1a1a;
-            --text-muted: #555555;
-            --primary-blue: #004085;
-            --accent-blue: #0056b3;
-            --success-green: #28a745;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Pulsantiera Azioni */
-        .action-bar {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-bottom: 20px;
-            max-width: 900px;
-            margin: 0 auto 20px auto;
-        }
-
-        .btn-pdf {
-            background: var(--success-green);
-            color: #ffffff;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            transition: all 0.2s ease;
-        }
-
-        .btn-pdf:hover {
-            transform: translateY(-2px);
-            background-color: #218838;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        /* Header */
-        .header {
-            border-bottom: 2px solid var(--primary-blue);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--primary-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0;
-            max-width: 70%;
-        }
-
-        .meta-fields {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .section {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            background-color: #ffffff;
-            page-break-inside: avoid !important; /* Forza i blocchi a non spezzarsi a metà foglio */
-            break-inside: avoid !important;
-        }
-
-        .section-title {
-            background: var(--primary-blue);
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 0.9rem;
-            padding: 10px 12px;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        /* Grid Layouts per i Campi */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 15px;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        input[type="text"], input[type="date"], input[type="time"], textarea {
-            background-color: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--text-color);
-            padding: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.2s;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Checkbox List */
-        .checklist {
-            padding: 15px;
-        }
-
-        .checklist-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eeeeee;
-        }
-
-        .checklist-item:last-child {
-            border-bottom: none;
-        }
-
-        .checklist-label {
-            font-size: 0.85rem;
-            padding-right: 15px;
-        }
-
-        .checkbox-options {
-            display: flex;
-            gap: 15px;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-        }
-
-        /* Sezione Note e Condizioni */
-        .text-block {
-            padding: 15px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .textarea-full {
-            padding: 15px;
-        }
-
-        .textarea-full textarea {
-            width: 100%;
-            box-sizing: border-box;
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        /* Lavagna Disegno Schema / Canna Fumaria */
-        .canvas-container {
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .canvas-wrapper {
-            position: relative;
-            background-color: #fafafa;
-            border: 1px dashed #999999;
-            border-radius: 4px;
-            display: block;
-            width: 100%;
-        }
-
-        .draw-canvas {
-            display: block;
-            width: 100%;
-            height: 250px;
-            cursor: crosshair;
-            touch-action: none;
-        }
-
-        .btn-clear {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        /* Firme Funzionanti */
-        .signature-section {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            padding: 20px 15px;
-            background-color: #ffffff;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .signature-title {
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .signature-pad-container {
-            border: 1px solid var(--border-color);
-            background-color: #fafafa;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .signature-canvas {
-            width: 100%;
-            height: 100px;
-            display: block;
-            cursor: cursive;
-            touch-action: none;
-        }
-
-        /* Privacy */
-        .privacy-box {
-            border: 1px solid var(--border-color);
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            padding: 15px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 25px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .privacy-title {
-            color: var(--primary-blue);
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .privacy-consent {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        /* =======================================================
-           REGOLE DI STAMPA CRITICHE PER CONGELARE IL LAYOUT
-           ======================================================= */
-        @media print {
-            body {
-                background-color: #ffffff;
-                color: #000000;
-                padding: 0;
-                margin: 0;
-            }
-            .container {
-                border: none;
-                box-shadow: none;
-                padding: 0;
-                max-width: 100%;
-            }
-            .action-bar, .btn-clear {
-                display: none !important;
-            }
-            /* Evita tassativamente che il browser deformi i box di testo stampati */
-            input[type="text"], input[type="date"], input[type="time"], textarea {
-                border: none !important;
-                border-bottom: 1px solid #666666 !important;
-                border-radius: 0 !important;
-                background: transparent !important;
-                box-shadow: none !important;
-            }
-            .section {
-                border: 1px solid #666666 !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-            }
-            .section-title {
-                background: #004085 !important;
-                color: #ffffff !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .grid-3, .grid-2, .signature-section {
-                grid-template-columns: 1fr;
-            }
-            .header-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .title { max-width: 100%; }
-        }
-    </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-    <div class="action-bar">
-        <button class="btn-pdf" onclick="avviaStampaPerfetta()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Stampa o Salva PDF di Sistema
-        </button>
+<div class="toolbar">
+  <button onclick="downloadPDF()">Scarica PDF</button>
+  <button onclick="clearAllCanvases()" class="btn-clear">Cancella Disegni e Firme</button>
+</div>
+
+<div id="modulo" class="page">
+
+  <div class="top-row">
+    <div class="left-title">
+      <h1>MODULO RAPPORTO TECNICO</h1>
+      <h2>PER IMPIANTO TERMICO CON POTENZA NOM. AL FOCOLARE &lt; 35 KW</h2>
     </div>
 
-<div class="container" id="modulo-tecnico">
+    <div class="ticket-box">
+      <div class="field-inline">
+        <label>N. Ticket</label>
+        <input type="text">
+      </div>
+      <div class="field-inline">
+        <label>Data Intervento</label>
+        <input type="text" placeholder="    /    /    ">
+      </div>
+      <div class="field-inline">
+        <label>Ora ingresso</label>
+        <input type="time">
+      </div>
+      <div class="field-inline">
+        <label>Ora uscita</label>
+        <input type="time">
+      </div>
+    </div>
+  </div>
 
-    <div class="header">
-        <div class="header-top">
-            <h1 class="title">Modulo Rapporto Tecnico per Impianto Termico con Potenza Nom. al Focolare &lt; 35 kW</h1>
-            <div class="form-group" style="min-width: 150px;">
-                <label>N. Ticket</label>
-                <input type="text" id="txt-ticket" placeholder="Es. 12345">
-            </div>
+  <div class="columns">
+
+    <div class="left-column">
+
+      <div class="section-title">
+        RESPONSABILE DELL'IMPIANTO TERMICO (CLIENTE FINALE)
+      </div>
+
+      <div class="line-field">
+        <label>Cognome/Nome</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Indirizzo</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Telefono</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>E-Mail</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Cod. Fisc.</label>
+        <input type="text">
+      </div>
+
+      <div class="section-title">
+        IDENTIFICAZIONE DEL GENERATORE INSTALLATO
+      </div>
+
+      <div class="line-field">
+        <label>Marca</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Modello</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Matricola</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Data acquisto</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>Rivenditore</label>
+        <input type="text">
+      </div>
+
+      <div class="schema-container">
+        <div class="canvas-label">SCHEMATIZZARE INSTALLAZIONE (Disegna qui sotto)</div>
+        <canvas id="canvas-schema" width="350" height="180"></canvas>
+      </div>
+
+      <div class="section-title">
+        ESITO DEL CONTROLLO
+      </div>
+
+      <div class="line-field">
+        <label>MOTIVO CHIAMATA</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>SOLUZIONE</label>
+        <input type="text">
+      </div>
+
+      <div class="checkbox-group">
+        <div class="check-item">
+          <span>CONTROLLO STUFA</span>
+          <label>SI <input type="checkbox"></label>
+          <label>NO <input type="checkbox"></label>
         </div>
-        
-        <div class="meta-fields">
-            <div class="form-group">
-                <label>Data Intervento</label>
-                <input type="date">
-            </div>
-            <div class="form-group">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label>Ora Ingresso</label>
-                        <input type="time">
-                    </div>
-                    <div>
-                        <label>Ora Uscita</label>
-                        <input type="time">
-                    </div>
-                </div>
-            </div>
+        <div class="check-item">
+          <span>CANNA FUMARIA</span>
+          <label>SI <input type="checkbox"></label>
+          <label>NO <input type="checkbox"></label>
         </div>
+      </div>
+
+      <div class="textarea-field">
+        <label>SOSTITUZIONE COMPONENTI</label>
+        <textarea></textarea>
+      </div>
+
+      <div class="line-field">
+        <label>TOTALE</label>
+        <input type="text">
+      </div>
+
+      <div class="line-field">
+        <label>ALTRO</label>
+        <input type="text">
+      </div>
+
+      <div class="section-title">
+        ACCETTAZIONE DEL RAPPORTO TECNICO
+      </div>
+
+      <div class="firma-container">
+        <div class="canvas-label">FIRMA DEL TECNICO</div>
+        <canvas id="canvas-firma-tecnico" width="350" height="55"></canvas>
+      </div>
+
+      <div class="firma-container">
+        <div class="canvas-label">FIRMA DEL RESPONSABILE IMPIANTO (PER PRESA VISIONE)</div>
+        <canvas id="canvas-firma-cliente" width="350" height="55"></canvas>
+      </div>
+
     </div>
 
-    <div class="section">
-        <h2 class="section-title">Responsabile dell'Impianto Termico (Cliente Finale)</h2>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Cognome / Nome</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Indirizzo</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Telefono</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label>E-mail</label>
-                        <input type="text">
-                    </div>
-                    <div>
-                        <label>Cod. Fiscale</label>
-                        <input type="text">
-                    </div>
-                </div>
-            </div>
+    <div class="right-column">
+
+      <div class="section-title-table">
+        <span>VERIFICA INSTALLAZIONE</span>
+        <div class="table-headers">
+          <span>SI</span>
+          <span>NO</span>
         </div>
+      </div>
+
+      <table class="check-table">
+        <tr class="table-subcat">
+          <td colspan="3">A DOCUMENTAZIONE TECNICA</td>
+        </tr>
+        <tr>
+          <td>Dichiarazione di Conformità dell'impianto ELETTRICO (Legge DM 37/08 del 2010)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Dichiarazione di Conformità dell'impianto FUMARIO (Legge DM 37/08 del 2010)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Dichiarazione di Conformità dell'impianto IDRAULICO (Legge DM 37/08 del 2010)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Libretto di impianto</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+
+        <tr class="table-subcat">
+          <td colspan="3">B LOCALE DI INSTALLAZIONE</td>
+        </tr>
+        <tr>
+          <td>Idoneità del locale d'installazione (vedi norme nazionali)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Distanze di sicurezza rispettate attorno al generatore</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di adeguate e libere aperture di ventilazione</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+
+        <tr class="table-subcat">
+          <td colspan="3">C ESAME VISIVO IMPIANTO</td>
+        </tr>
+        <tr>
+          <td>Canna fumaria in buono stato di conservazione e pulizia</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Canna fumaria di materiale e coibentazione adeguati</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Dimensioni canna fumaria (sezione ed altezza)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Tipologia dell'impianto di riscaldamento (termosifoni, a pavimento, ecc)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di saracinesche idrauliche prima della caldaia</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di vasi di espansione adeguati</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Pressione d'impianto idonea (circa 1,5 bar a caldo)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di accumulo inerziale di acqua tecnica (puffer)</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di valvole anti-condensa sull'impianto</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+          <td>Presenza di condizionatori chimici, disaeratori, defangatori</td>
+          <td><input type="checkbox"></td>
+          <td><input type="checkbox"></td>
+        </tr>
+      </table>
+
+      <div class="legal-disclaimer">
+        L'utente può mettere in funzione l'apparecchio a condizioni che ottemperi a quanto riportato nei punti A, B e C.<br>
+        Il tecnico declina ogni responsabilità per sinistro a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive. In presenza di carenze riscontrate e non eliminate, il responsabile dell'impianto si impegna, entro breve tempo, a provvedere alla loro risoluzione dandone notizia all'operatore incaricato. Nel caso di mancanza di Dichiarazione di Conformità dell'impianto, se all'atto delle prove di messa in servizio dell'apparechiatura non sono riscontrate prescrizioni che ne impediscano l'avviamento, è comunque indispensabile, per effetto della Legge 37/08, che l'Utente faccia controllare l'impianto da un installatore qualificato e si faccia rilasciare le relative Dichiarazione di Conformità mancanti.
+      </div>
+
+      <div class="notes-title">
+        NOTE
+      </div>
+      <div class="notes-checks">
+        <label><input type="checkbox"> OSSERVAZIONI</label>
+        <label><input type="checkbox"> RACCOMANDAZIONI</label>
+        <label><input type="checkbox"> PRESCRIZIONI</label>
+      </div>
+      <textarea class="big-notes"></textarea>
+
+      <div class="privacy-box">
+        <h3>INFORMATIVA AI SENSI DELLA DISCIPLINA SULLA TUTELA DEI DATI PERSONALI</h3>
+        <p class="privacy-intro">Egregio Signore, Gent.ma Signora,</p>
+        <p>
+          il titolare del trattamento dei suoi dati personali (di seguito "Società" rilascia la presente informativa nel rispetto della disciplina europea e italiana in materia di protezione dei dati personali. La Società ha nominato un responsabile della protezione dei dati (DPO), che potrà contattare scrivendo al seguente recapito: ____________________.<br>
+          <strong>Finalità e base giuridica:</strong> I Suoi dati personali saranno trattati per le seguenti finalità: A) fornire assistenza tecnica; B) rispondere a Sue specifiche richieste; C) adempiere ad obblighi di legge di natura amministrativa, contabile, fiscale, regolamenti, normative comunitarie e/o extracomunitarie, D) gestire l'eventuale contenzioso. In relazione a tali finalità, il Suo consenso non è richiesto. Invero, la base giuridica del trattamento è costituita dalla necessità per il perseguimento delle predette finalità; E) solo previo suo specifico e distinto consenso per l'invio, anche con modalità automatizzate, di material pubblicitario, informative ed informazioni commerciali, sondaggi di opinione e di gradimento, newsletter e/o inviti ad eventi di cui il Titolare sia parte o l'organizzatore (di seguito, "Finalità Promozionali"). Il trattamento sarà improntato sui principi di correttezza, liceità, trasparenza e di tutela della Sua riservatezza e dei Suoi diritti.<br>
+          <strong>Periodo di conservazione dei dati:</strong> I Suoi dati personali saranno trattati: - per le finalità di cui ai punti A), B), C) e D) anche dopo l'intervento di assistenza tecnica e/o l'evasione della sua richiesta di informazioni per l'espletamento di tutti gli eventuali adempimenti connessi o derivanti dall'intervento stesso per il periodo di durata prescritto delle leggi tempo per tempo vigenti e secondo il termine di prescrizione dei diritti; - per le Finalità Promozionali di cui al punto E).<br>
+          <strong>Natura del conferimento dei dati e conseguenze in caso di rifiuto:</strong> Il conferimento dei dati è: - Per le finalità di cui ai punti A), B), C) e D) obbligatorio è pertanto l'eventuale rifiuto a fornirli in tutto o in parte può dar luogo all'impossibilità per la ns. Ditta di evadere la richiesta di assistenza o di svolgere correttamente tutti gli adempimenti correlati. - Per le Finalità di cui al punto E) facoltativo, perciò Lei potrà decidere di non conferire alcun dato o di negare successivamente la possibilità di trattare dati già forniti: in tal caso, non potrà ricevere le comunicazioni sopra indicate.<br>
+          <strong>Categorie dei destinatari:</strong> Con riferimento alle finalità di cui ai predetti punti A), B), C), D) ed E), i dati raccolti ed elaborati potranno essere comunicati a figure interne autorizzate al trattamento in ragione delle rispettive mansioni, nonché alle seguenti categorie di soggetti esterni: - istituti di credito; - avvocati e consulenti legali; - Enti Pubblici e privati, anche a seguito di ispezioni e verifiche - provider sito web, cloud provider, fornitori, tecnici addetti all'assistenza hardware e software, etc. - società o altri soggetti terzi che svolgono attività in outsourcing. Tali destinatari, ove dovessero trattare dati per conto della nostra Società, saranno designati come responsabili del trattamento, con apposito contratto od altro atto giuridico. Trasferimento dati verso un paese terzo e/o un'organizzazione internazionale - Per esigenze strettamente legate al perseguimento delle finalità sopra specificate, alcuni Suoi dati personali potranno essere oggetto di trasferimento a Paesi e/o organizzazioni extra UE. Di volta in volta, il presupposto del lecito trasferimento dei dati personali potrà essere rappresentato da: - dall'esistenza di decisioni di adeguatezza emanate dalla Commissione UE per taluni Paesi che garantiscono il medesimo livello di protezione dei dati trasferiti garantito nella Unione Europea. - Dal rispetto - per gli USA - delle specifiche garanzie a tutela dei dati personali previste dall'accordo denominato Privacy Shield; - delle clausole contrattuali tipo indicate dalla Commissione europea.<br>
+          <strong>Diritti degli interessati:</strong> Lei ha il diritto (v. artt. 15 -22 del GDPR) di chiedere alla ns. Società di accedere ai Suoi dati personali e di rettificarli se inesatti, di cancellarli o limitarne il trattamento se ne ricorrono i presupposti, nonché di ottenere la portabilità dei dati da Lei forniti solo se oggetto di un trattamento automatizzato basato sul Suo consenso o sul contratto. Lei ha altresì il diritto di revocare il consenso prestato per le finalità di trattamento che lo richiedono, ferma restando la liceità del trattamento effettuato sino al momento della revoca. Lei ha anche il diritto di proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it).
+        </p>
+        <div class="privacy-consent-section">
+          <p>Presa visione della sopra esposta informativa, il Cliente</p>
+          <div class="privacy-consent">
+            <label><input type="checkbox"> esprime il consenso</label>
+            <label><input type="checkbox"> non esprime il consenso</label>
+          </div>
+          <p class="promo-text">al trattamento dei propri dati personali per finalità Promozionali.</p>
+        </div>
+      </div>
+
     </div>
 
-    <div class="section">
-        <h2 class="section-title">Identificazione del Generatore Installato</h2>
-        <div class="grid-3">
-            <div class="form-group">
-                <label>Marca</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Modello</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Matricola</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Data Acquisto</label>
-                <input type="date">
-            </div>
-            <div class="form-group" style="grid-column: span 2;">
-                <label>Rivenditore</label>
-                <input type="text">
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Verifica Installazione e Documentazione Tecnica</h2>
-        <div class="checklist">
-            <div class="checklist-item">
-                <span class="checklist-label">Dichiarazione di Conformità impianto ELETTRICO (Legge DM 37/08)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="doc_elettrico" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="doc_elettrico" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Dichiarazione di Conformità dell'impianto FUMARIO (Legge DM 37/08)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="doc_fumario" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="doc_fumario" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Dichiarazione Conformità impianto IDRAULICO (Legge DM 37/08)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="doc_idraulico" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="doc_idraulico" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Libretto di Impianto presente e compilato</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="libretto" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="libretto" value="NO"> NO</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Locale di Installazione ed Esame Visivo Impianto</h2>
-        <div class="checklist">
-            <div class="checklist-item">
-                <span class="checklist-label">Idoneità del locale d'installazione (vedi norme nazionali)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="locale_idoneo" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="locale_idoneo" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Distanze di sicurezza rispettate attorno al generatore</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="distanze_sic" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="distanze_sic" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di adeguate e libere aperture di ventilazione</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="ventilazione" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="ventilazione" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Canna fumaria in buono stato di conservazione e pulizia</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="canna_stato" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="canna_stato" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Canna fumaria di materiale e coibentazione adeguati</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="canna_mat" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="canna_mat" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Dimensioni canna fumaria idonee (sezione ed altezza)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="canna_dim" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="canna_dim" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di saracinesche idrauliche prima della caldaia / stufa</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="saracinesche" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="saracinesche" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di vasi di espansione adeguati</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="vasi_esp" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="vasi_esp" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Pressione d'impianto idonea (circa 1,5 bar a caldo)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="pressione" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="pressione" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di accumulo inerziale di acqua tecnica (puffer)</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="puffer" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="puffer" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di valvole anti-condensa sull'impianto</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="valvole_anticond" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="valvole_anticond" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Presenza di condizionatori chimici, disaeratori, defangatori</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="trattamento_chimico" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="trattamento_chimico" value="NO"> NO</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Schema Tecnico e Layout Canna Fumaria</h2>
-        <div class="text-block">
-            Utilizza lo spazio sottostante (touchscreen o mouse) per disegnare o schematizzare l'andamento della canna fumaria.
-        </div>
-        <div class="canvas-container">
-            <div class="canvas-wrapper">
-                <canvas id="canvas-canna" class="draw-canvas"></canvas>
-            </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Specifiche Tipologia Impianto</h2>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Tipologia dell'impianto di riscaldamento (termosifoni, a pavimento, ecc.)</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Descrizione sintetica installazione</label>
-                <input type="text">
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Note e Prescrizioni di Sicurezza</h2>
-        <div class="text-block">
-            L'utente può mettere in funzione l'apparecchio a condizioni che ottemperi a quanto riportato nelle note o prescrizioni sottostanti.
-        </div>
-        <div class="text-block" style="font-style: italic;">
-            Il tecnico declina ogni responsabilità per sinistri a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive.
-        </div>
-        
-        <div class="textarea-full">
-            <label>NOTE / DETTAGLI AGGIUNTIVI</label>
-            <textarea placeholder="Inserire eventuali note tecniche..."></textarea>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">Esito e Dettagli Controllo</h2>
-        <div class="checklist" style="border-bottom: 1px solid var(--border-color);">
-            <div class="checklist-item">
-                <span class="checklist-label"><strong>ESITO DEL CONTROLLO:</strong></span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="esito" value="OSSERVAZIONI"> OSSERVAZIONI</label>
-                    <label class="checkbox-container"><input type="radio" name="esito" value="RACCOMANDAZIONI"> RACCOMANDAZIONI</label>
-                    <label class="checkbox-container"><input type="radio" name="esito" value="PRESCRIZIONI"> PRESCRIZIONI</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Motivo della Chiamata</label>
-                <textarea rows="2"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Soluzione Adottata / Intervento</label>
-                <textarea rows="2"></textarea>
-            </div>
-        </div>
-
-        <div class="grid-3" style="border-top: 1px solid var(--border-color); background-color: #f8f9fa;">
-            <div class="form-group">
-                <label>Sostituzione Componenti (Lista parti)</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label>Altro / Varie</label>
-                <input type="text">
-            </div>
-            <div class="form-group">
-                <label style="color: var(--primary-blue); font-weight: bold;">Totale Intervento (€)</label>
-                <input type="text" style="border-color: var(--primary-blue); font-weight: bold;">
-            </div>
-        </div>
-    </div>
-
-    <div class="signature-section">
-        <div class="form-group">
-            <div class="signature-title">FIRMA DEL TECNICO</div>
-            <div class="signature-pad-container">
-                <canvas id="canvas-firma-tecnico" class="signature-canvas"></canvas>
-            </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
-        </div>
-        <div class="form-group">
-            <div class="signature-title">FIRMA DEL RESPONSABILE IMPIANTO</div>
-            <div class="signature-pad-container">
-                <canvas id="canvas-firma-cliente" class="signature-canvas"></canvas>
-            </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
-        </div>
-    </div>
-
-    <div class="privacy-box">
-        <div class="privacy-title">Informativa sulla Privacy (GDPR)</div>
-        <div class="privacy-consent">
-            <span>Presa visione dell'informativa, il Cliente:</span>
-            <div class="checkbox-options">
-                <label><input type="radio" name="privacy" value="SI"> ACCETTA</label>
-                <label><input type="radio" name="privacy" value="NO"> DECLINA</label>
-            </div>
-        </div>
-    </div>
+  </div>
 
 </div>
 
-    <script>
-        window.addEventListener("load", () => {
-            initDrawCanvas("canvas-canna", "#004085", 3);
-            initDrawCanvas("canvas-firma-tecnico", "#000000", 2);
-            initDrawCanvas("canvas-firma-cliente", "#000000", 2);
-            
-            window.addEventListener('resize', () => {
-                resizeCanvas("canvas-canna");
-                resizeCanvas("canvas-firma-tecnico");
-                resizeCanvas("canvas-firma-cliente");
-            });
-        });
+<script>
+function initCanvas(canvasId, targetHeight) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
 
-        function initDrawCanvas(canvasId, strokeColor, lineWidth) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext("2d");
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Assegna larghezza e altezza precise basate sul contenitore reale
+  canvas.width = canvas.parentElement.clientWidth - 2;
+  canvas.height = targetHeight;
 
-            let drawing = false;
-            function getCoords(e) {
-                const rect = canvas.getBoundingClientRect();
-                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: clientX - rect.left, y: clientY - rect.top };
-            }
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#000000';
 
-            function startDraw(e) {
-                drawing = true;
-                const coords = getCoords(e);
-                ctx.beginPath();
-                ctx.moveTo(coords.x, coords.y);
-                ctx.lineWidth = lineWidth;
-                ctx.lineCap = "round";
-                ctx.strokeStyle = strokeColor;
-                if(e.touches) e.preventDefault();
-            }
+  canvas.addEventListener('mousedown', (e) => { drawing = true; draw(e, canvas, ctx); });
+  canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+  canvas.addEventListener('mousemove', (e) => { draw(e, canvas, ctx); });
 
-            function draw(e) {
-                if (!drawing) return;
-                const coords = getCoords(e);
-                ctx.lineTo(coords.x, coords.y);
-                ctx.stroke();
-                if(e.touches) e.preventDefault();
-            }
+  canvas.addEventListener('touchstart', (e) => { drawing = true; drawTouch(e, canvas, ctx); e.preventDefault(); }, { passive: false });
+  canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); }, { passive: false });
+  canvas.addEventListener('touchmove', (e) => { drawTouch(e, canvas, ctx); e.preventDefault(); }, { passive: false });
+}
 
-            function stopDraw() { drawing = false; }
+function draw(e, canvas, ctx) {
+  if (!ctx.canvas.parentElement.offsetParent || !e.buttons && e.type === 'mousemove') return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-            canvas.addEventListener("mousedown", startDraw);
-            canvas.addEventListener("mousemove", draw);
-            canvas.addEventListener("mouseup", stopDraw);
-            canvas.addEventListener("mouseleave", stopDraw);
-            canvas.addEventListener("touchstart", startDraw, { passive: false });
-            canvas.addEventListener("touchmove", draw, { passive: false });
-            canvas.addEventListener("touchend", stopDraw);
-        }
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
 
-        function resizeCanvas(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvas.width;
-            tempCanvas.height = canvas.height;
-            tempCanvas.getContext('2d').drawImage(canvas, 0, 0);
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
-        }
+function drawTouch(e, canvas, ctx) {
+  if (e.touches.length === 0) return;
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches[0];
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
 
-        function clearCanvas(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
 
-        // FUNZIONE CRITICA: Forza il browser a trasformare i testi scritti a mano in valori fissi HTML prima della stampa
-        function avviaStampaPerfetta() {
-            // Blocca i valori nei campi di testo standard e date
-            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"]');
-            inputs.forEach(input => {
-                input.setAttribute('value', input.value);
-            });
+function clearAllCanvases() {
+  ['canvas-schema', 'canvas-firma-tecnico', 'canvas-firma-cliente'].forEach(id => {
+    const canvas = document.getElementById(id);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+}
 
-            // Blocca i testi nelle aree grandi (Note, Soluzioni)
-            const textareas = document.querySelectorAll('textarea');
-            textareas.forEach(textarea => {
-                textarea.textContent = textarea.value;
-            });
+// ==========================================================================
+// REGISTRAZIONE SERVICE WORKER E INIZIALIZZAZIONE (MODIFICATO)
+// ==========================================================================
+window.onload = function() {
+  // Avvia il Service Worker per il funzionamento Offline
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker attivato con successo!'))
+      .catch((err) => console.log('Errore Service Worker:', err));
+  }
 
-            // Blocca le scelte dei pallini Radio
-            const radios = document.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => {
-                if (radio.checked) {
-                    radio.setAttribute('checked', 'checked');
-                } else {
-                    radio.removeAttribute('checked');
-                }
-            });
+  // Inizializza le aree di disegno e firma
+  initCanvas('canvas-schema', 180);
+  initCanvas('canvas-firma-tecnico', 55);
+  initCanvas('canvas-firma-cliente', 55);
+};
 
-            // Avvia la stampa nativa pulita
-            window.print();
-        }
-    </script>
-    <script>
-        // Attivazione del Service Worker per l'installazione su smartphone
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registrato con Successo!'))
-                .catch((err) => console.error('Errore registrazione Service Worker:', err));
-        }
-    </script>
+function downloadPDF() {
+  const element = document.getElementById('modulo');
+  
+  // Opzioni avanzate per garantire un output perfetto in formato A4
+  const opt = {
+    margin: 0,
+    filename: 'rapporto-tecnico-firmato.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  
+  // Genera ed esporta il PDF dell'elemento #modulo
+  html2pdf().set(opt).from(element).save();
+}
+</script>
+
 </body>
 </html>
