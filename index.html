@@ -100,13 +100,18 @@
             margin-top: 15px;
         }
 
-        /* Sezioni */
+        /* EVITA I SALTERELLI DI PAGINA BRUTTI NEL PDF */
+        .section, .header, .signature-section, .privacy-box {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            background-color: #ffffff;
+        }
+
         .section {
             border: 1px solid var(--border-color);
             border-radius: 6px;
             margin-bottom: 20px;
             overflow: hidden;
-            background-color: #ffffff;
         }
 
         .section-title {
@@ -155,6 +160,8 @@
             padding: 8px;
             font-size: 0.9rem;
             transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
@@ -230,7 +237,6 @@
             border-radius: 4px;
             display: inline-block;
             width: 100%;
-            max-width: 100%;
         }
 
         .draw-canvas {
@@ -314,6 +320,11 @@
             gap: 10px;
         }
 
+        /* Stile specifico per nascondere i bottoni di cancellazione durante la generazione del PDF */
+        .hide-on-pdf {
+            display: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .grid-3, .grid-2, .signature-section {
@@ -331,7 +342,7 @@
 </head>
 <body>
 
-    <div class="action-bar">
+    <div class="action-bar pdf-ignore">
         <button class="btn-pdf" onclick="generaPDF()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Converti e Salva PDF
@@ -358,18 +369,17 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div>
                         <label>Ora Ingresso</label>
-                        <input type="time" style="width: 100%; box-sizing: border-box;">
+                        <input type="time">
                     </div>
                     <div>
                         <label>Ora Uscita</label>
-                        <input type="time" style="width: 100%; box-sizing: border-box;">
+                        <input type="time">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SEZIONE CLIENTE -->
     <div class="section">
         <h2 class="section-title">Responsabile dell'Impianto Termico (Cliente Finale)</h2>
         <div class="grid-2">
@@ -389,18 +399,17 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div>
                         <label>E-mail</label>
-                        <input type="text" style="width: 100%; box-sizing: border-box;">
+                        <input type="text">
                     </div>
                     <div>
                         <label>Cod. Fiscale</label>
-                        <input type="text" style="width: 100%; box-sizing: border-box;">
+                        <input type="text">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SEZIONE GENERATORE -->
     <div class="section">
         <h2 class="section-title">Identificazione del Generatore Installato</h2>
         <div class="grid-3">
@@ -427,7 +436,6 @@
         </div>
     </div>
 
-    <!-- VERIFICA DOCUMENTALE -->
     <div class="section">
         <h2 class="section-title">Verifica Installazione e Documentazione Tecnica</h2>
         <div class="checklist">
@@ -462,7 +470,6 @@
         </div>
     </div>
 
-    <!-- LOCALE ED ESAME VISIVO -->
     <div class="section">
         <h2 class="section-title">Locale di Installazione ed Esame Visivo Impianto</h2>
         <div class="checklist">
@@ -553,21 +560,19 @@
         </div>
     </div>
 
-    <!-- NUOVA SEZIONE: SCHEMA DISEGNO CANNA FUMARIA -->
     <div class="section">
         <h2 class="section-title">Schema Tecnico e Layout Canna Fumaria</h2>
         <div class="text-block">
-            Utilizza lo spazio sottostante (touchscreen o mouse) per disegnare o schematizzare l'andamento della canna fumaria, curve, scarichi condensa e prese d'aria.
+            Utilizza lo spazio sottostante (touchscreen o mouse) per disegnare o schematizzare l'andamento della canna fumaria.
         </div>
         <div class="canvas-container">
             <div class="canvas-wrapper">
                 <canvas id="canvas-canna" class="draw-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
+            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
         </div>
     </div>
 
-    <!-- SPECIFICHE TIPOLOGIA -->
     <div class="section">
         <h2 class="section-title">Specifiche Tipologia Impianto</h2>
         <div class="grid-2">
@@ -582,7 +587,6 @@
         </div>
     </div>
 
-    <!-- NOTE E PRESCRIZIONI -->
     <div class="section">
         <h2 class="section-title">Note e Prescrizioni di Sicurezza</h2>
         <div class="text-block">
@@ -592,7 +596,7 @@
             Il tecnico declina ogni responsabilità per sinistri a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive.
         </div>
         <div class="text-block">
-            In presenza di carenze riscontrate e non eliminate, il responsabile dell'impianto si impegna, entro breve tempo, a provvedere alla loro risoluzione dandone notizia all'operatore incaricato. Nel caso di mancanza di Dichiarazione di Conformità dell'impianto, se all'atto delle prove di messa in servizio dell'apparecchiatura non sono riscontrate prescrizioni che ne impediscano l'avviamento, è comunque indispensabile (per effetto della Legge 37/08) che l'utente faccia controllare l'impianto da un installatore qualificato e si faccia rilasciare le relative Dichiarazioni di Conformità mancanti.
+            In presenza di carenze riscontrate e non eliminate, il responsabile dell'impianto si impegna, entro breve tempo, a provvedere alla loro risoluzione dandone notizia all'operatore incaricato.
         </div>
         
         <div class="textarea-full">
@@ -601,7 +605,6 @@
         </div>
     </div>
 
-    <!-- ESITO E DETTAGLI CONTROLLO -->
     <div class="section">
         <h2 class="section-title">Esito e Dettagli Controllo</h2>
         <div class="checklist" style="border-bottom: 1px solid var(--border-color);">
@@ -656,40 +659,28 @@
         </div>
     </div>
 
-    <!-- SEZIONE FIRME INTERATTIVE COMPILABILI -->
     <div class="signature-section">
         <div class="form-group">
             <div class="signature-title">FIRMA DEL TECNICO</div>
             <div class="signature-pad-container">
                 <canvas id="canvas-firma-tecnico" class="signature-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
+            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
         </div>
         <div class="form-group">
-            <div class="signature-title">FIRMA DEL RESPONSABILE IMPIANTO (Per Presa Visione)</div>
+            <div class="signature-title">FIRMA DEL RESPONSABILE IMPIANTO</div>
             <div class="signature-pad-container">
                 <canvas id="canvas-firma-cliente" class="signature-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
+            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
         </div>
     </div>
 
-    <!-- PRIVACY -->
     <div class="privacy-box">
         <div class="privacy-title">Informativa ai sensi della disciplina sulla tutela dei dati personali (GDPR)</div>
         <p style="margin: 5px 0;">
-            Il titolare del trattamento dei suoi dati personali (di seguito "Società") rilascia la presente informativa nel rispetto della disciplina europea e italiana in materia di protezione dei dati personali. La Società ha nominato un responsabile della protezione dei dati (DPO).
+            Il titolare del trattamento dei suoi dati personali rilascia la presente informativa nel rispetto della disciplina europea e italiana.
         </p>
-        <p style="margin: 5px 0;">
-            <strong>Finalità e base giuridica:</strong> I Suoi dati personali saranno trattati per le seguenti finalità: A) fornire assistenza tecnica; B) rispondere a Sue specifiche richieste; C) adempiere agli obblighi di legge, regolamenti, normative comunitarie; D) gestione di eventuale contenzioso.
-        </p>
-        <p style="margin: 5px 0;">
-            <strong>Natura del conferimento:</strong> Il conferimento dei dati per le finalità A, B, C e D è obbligatorio, l'eventuale rifiuto comporterà l'impossibilità di evadere la richiesta di assistenza. La finalità E (Promozionale) è facoltativa.
-        </p>
-        <p style="margin: 5px 0;">
-            <strong>Diritti degli interessati:</strong> Lei ha il diritto (art. 15-22 GDPR) di chiedere alla Società l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione degli stessi, o di opporsi al loro trattamento basato sul Suo consenso.
-        </p>
-
         <div class="privacy-consent">
             <span>Presa visione della sopra esposta informativa, il Cliente:</span>
             <div class="checkbox-options">
@@ -700,15 +691,12 @@
                     <input type="radio" name="privacy_consent" value="NO"> NON ESPRIME IL CONSENSO
                 </label>
             </div>
-            <span style="width: 100%; font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 5px;">
-                al trattamento dei propri dati personali per finalità Promozionali e commerciali.
-            </span>
         </div>
     </div>
 
 </div>
 
-    <div class="action-bar" style="margin-top: 20px; margin-bottom: 40px;">
+    <div class="action-bar pdf-ignore" style="margin-top: 20px; margin-bottom: 40px;">
         <button class="btn-pdf" onclick="generaPDF()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Converti e Salva PDF
@@ -716,7 +704,6 @@
     </div>
 
     <script>
-        // Logica di inizializzazione dei Canvas da disegno
         window.addEventListener("load", () => {
             initDrawCanvas("canvas-canna", "#004085", 3);
             initDrawCanvas("canvas-firma-tecnico", "#000000", 2);
@@ -727,11 +714,9 @@
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext("2d");
             
-            // Impostiamo la risoluzione interna del canvas per evitare sgranature
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
 
-            // Assicura lo sfondo bianco nativo sul canvas per il motore PDF
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -741,10 +726,7 @@
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
+                return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
             function startDraw(e) {
@@ -766,39 +748,16 @@
                 ctx.stroke();
             }
 
-            function stopDraw() {
-                drawing = false;
-            }
+            function stopDraw() { drawing = false; }
 
-            // Mouse Event Listeners
             canvas.addEventListener("mousedown", startDraw);
             canvas.addEventListener("mousemove", draw);
             canvas.addEventListener("mouseup", stopDraw);
             canvas.addEventListener("mouseleave", stopDraw);
 
-            // Touch Event Listeners (Smartphone / Tablet)
             canvas.addEventListener("touchstart", startDraw, { passive: false });
             canvas.addEventListener("touchmove", draw, { passive: false });
             canvas.addEventListener("touchend", stopDraw);
-            
-            // Gestione ridimensionamento finestra per mantenere le proporzioni del disegno
-            window.addEventListener('resize', () => {
-                // Conserva il disegno corrente
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = canvas.width;
-                tempCanvas.height = canvas.height;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.drawImage(canvas, 0, 0);
-                
-                // Ridimensiona
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
-                
-                // Ripristina sfondo e disegno precedente
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
-            });
         }
 
         function clearCanvas(canvasId) {
@@ -808,7 +767,39 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
+        // QUESTA FUNZIONE CONGELA I DATI PRIMA DI CREARE IL PDF
+        function congelaDatiPerPDF() {
+            // 1. Salva i testi scritti negli input
+            const inputs = document.querySelectorAll('#modulo-tecnico input[type="text"], #modulo-tecnico input[type="date"], #modulo-tecnico input[type="time"]');
+            inputs.forEach(input => {
+                input.setAttribute('value', input.value);
+            });
+
+            // 2. Salva le aree di testo lunghe
+            const textareas = document.querySelectorAll('#modulo-tecnico textarea');
+            textareas.forEach(textarea => {
+                textarea.innerHTML = textarea.value;
+            });
+
+            // 3. Salva la selezione dei bottoni Radio (SI/NO ecc.)
+            const radios = document.querySelectorAll('#modulo-tecnico input[type="radio"]');
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    radio.setAttribute('checked', 'checked');
+                } else {
+                    radio.removeAttribute('checked');
+                }
+            });
+        }
+
         function generaPDF() {
+            // Congela i dati immessi dall'utente nell'interfaccia prima della cattura
+            congelaDatiPerPDF();
+
+            // Nasconde temporaneamente i bottoni "Cancella" per non averli nel PDF
+            const clearButtons = document.querySelectorAll('.pdf-ignore-btn');
+            clearButtons.forEach(btn => btn.classList.add('hide-on-pdf'));
+
             const ticket = document.getElementById('txt-ticket').value || 'N-A';
             const cliente = document.getElementById('txt-cliente').value.trim().replace(/\s+/g, '_') || 'Cliente';
             const nomeFile = `Rapporto_Tecnico_Ticket_${ticket}_${cliente}.pdf`;
@@ -816,15 +807,19 @@
             const elemento = document.getElementById('modulo-tecnico');
 
             const opzioni = {
-                margin:       10,
+                margin:       8,
                 filename:     nomeFile,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    backgroundColor: '#ffffff',
+                    logging: false
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opzioni).from(elemento).save();
-        }
-    </script>
-</body>
-</html>
+            // Esegui la generazione
+            html2pdf().set(opzioni).from(elemento).save().then(() => {
+                // Ripristina i bottoni "Cancella" sul modulo a schermo una volta salvato il PDF
+                clearButtons.forEach(btn => btn.classList.remove('hide-on-pdf'));
