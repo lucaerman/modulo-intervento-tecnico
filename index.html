@@ -105,8 +105,8 @@
             margin-bottom: 20px;
             overflow: hidden;
             background-color: #ffffff;
-            page-break-inside: avoid; /* Dice alla stampante di non tagliare i blocchi a metà */
-            break-inside: avoid;
+            page-break-inside: avoid !important; /* Forza i blocchi a non spezzarsi a metà foglio */
+            break-inside: avoid !important;
         }
 
         .section-title {
@@ -253,8 +253,8 @@
             gap: 40px;
             padding: 20px 15px;
             background-color: #ffffff;
-            page-break-inside: avoid;
-            break-inside: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
         .signature-title {
@@ -289,8 +289,8 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-top: 25px;
-            page-break-inside: avoid;
-            break-inside: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
         .privacy-title {
@@ -312,7 +312,7 @@
         }
 
         /* =======================================================
-           REGOLE DI STAMPA DI SISTEMA (PER UN PDF PERFETTO)
+           REGOLE DI STAMPA CRITICHE PER CONGELARE IL LAYOUT
            ======================================================= */
         @media print {
             body {
@@ -328,22 +328,26 @@
                 max-width: 100%;
             }
             .action-bar, .btn-clear {
-                display: none !important; /* Nasconde i bottoni nel PDF */
+                display: none !important;
             }
+            /* Evita tassativamente che il browser deformi i box di testo stampati */
             input[type="text"], input[type="date"], input[type="time"], textarea {
-                border: none;
-                border-bottom: 1px solid #666666; /* Trasforma i box in eleganti linee stampate */
-                border-radius: 0;
-                background: transparent;
+                border: none !important;
+                border-bottom: 1px solid #666666 !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
             }
             .section {
-                border: 1px solid #666666;
+                border: 1px solid #666666 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
             .section-title {
                 background: #004085 !important;
                 color: #ffffff !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
@@ -363,7 +367,7 @@
 <body>
 
     <div class="action-bar">
-        <button class="btn-pdf" onclick="window.print()">
+        <button class="btn-pdf" onclick="avviaStampaPerfetta()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Stampa o Salva PDF di Sistema
         </button>
@@ -770,6 +774,34 @@
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // FUNZIONE CRITICA: Forza il browser a trasformare i testi scritti a mano in valori fissi HTML prima della stampa
+        function avviaStampaPerfetta() {
+            // Blocca i valori nei campi di testo standard e date
+            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"]');
+            inputs.forEach(input => {
+                input.setAttribute('value', input.value);
+            });
+
+            // Blocca i testi nelle aree grandi (Note, Soluzioni)
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.textContent = textarea.value;
+            });
+
+            // Blocca le scelte dei pallini Radio
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    radio.setAttribute('checked', 'checked');
+                } else {
+                    radio.removeAttribute('checked');
+                }
+            });
+
+            // Avvia la stampa nativa pulita
+            window.print();
         }
     </script>
 </body>
