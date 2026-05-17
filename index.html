@@ -7,14 +7,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --text-color: #c9d1d9;
-            --text-muted: #8b949e;
-            --neon-blue: #00f2fe;
-            --neon-green: #4facfe;
-            --neon-accent-green: #00ff87;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --border-color: #cccccc;
+            --text-color: #1a1a1a;
+            --text-muted: #555555;
+            --primary-blue: #004085;
+            --accent-blue: #0056b3;
+            --success-green: #28a745;
         }
 
         body {
@@ -33,7 +33,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 25px;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         /* Pulsantiera Azioni */
@@ -47,8 +47,8 @@
         }
 
         .btn-pdf {
-            background: linear-gradient(135deg, var(--neon-accent-green), #00b359);
-            color: #000;
+            background: var(--success-green);
+            color: #ffffff;
             border: none;
             padding: 12px 24px;
             font-size: 1rem;
@@ -58,22 +58,19 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             transition: all 0.2s ease;
         }
 
         .btn-pdf:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 18px rgba(0, 255, 135, 0.6);
-        }
-
-        .btn-pdf:active {
-            transform: translateY(0);
+            background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         /* Header */
         .header {
-            border-bottom: 2px solid var(--neon-blue);
+            border-bottom: 2px solid var(--primary-blue);
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
@@ -89,7 +86,7 @@
         .title {
             font-size: 1.3rem;
             font-weight: bold;
-            color: var(--neon-blue);
+            color: var(--primary-blue);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0;
@@ -109,14 +106,15 @@
             border-radius: 6px;
             margin-bottom: 20px;
             overflow: hidden;
+            background-color: #ffffff;
         }
 
         .section-title {
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-accent-green));
-            color: #000;
+            background: var(--primary-blue);
+            color: #ffffff;
             font-weight: bold;
             font-size: 0.9rem;
-            padding: 8px 12px;
+            padding: 10px 12px;
             margin: 0;
             text-transform: uppercase;
         }
@@ -146,10 +144,11 @@
             color: var(--text-muted);
             margin-bottom: 4px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         input[type="text"], input[type="date"], input[type="time"], textarea {
-            background-color: var(--bg-color);
+            background-color: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             color: var(--text-color);
@@ -160,8 +159,8 @@
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: var(--neon-accent-green);
-            box-shadow: 0 0 5px rgba(0, 255, 135, 0.2);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
         }
 
         /* Checkbox List */
@@ -174,7 +173,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+            border-bottom: 1px solid #eeeeee;
         }
 
         .checklist-item:last-child {
@@ -218,7 +217,44 @@
             min-height: 60px;
         }
 
-        /* Firme */
+        /* Lavagna Disegno Schema / Canna Fumaria */
+        .canvas-container {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .canvas-wrapper {
+            position: relative;
+            background-color: #fafafa;
+            border: 1px dashed #999999;
+            border-radius: 4px;
+            display: inline-block;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .draw-canvas {
+            display: block;
+            width: 100%;
+            height: 250px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .btn-clear {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .btn-clear:hover { background-color: #5a6268; }
+
+        /* Firme Funzionanti */
         .signature-section {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -226,19 +262,33 @@
             padding: 20px 15px;
         }
 
-        .signature-box {
-            border-top: 1px dashed var(--text-muted);
-            margin-top: 45px;
+        .signature-title {
             text-align: center;
             font-size: 0.8rem;
             color: var(--text-muted);
-            padding-top: 5px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .signature-pad-container {
+            border: 1px solid var(--border-color);
+            background-color: #fafafa;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .signature-canvas {
+            width: 100%;
+            height: 100px;
+            display: block;
+            cursor: cursive;
+            touch-action: none;
         }
 
         /* Privacy */
         .privacy-box {
             border: 1px solid var(--border-color);
-            background-color: rgba(22, 27, 34, 0.5);
+            background-color: #f8f9fa;
             border-radius: 6px;
             padding: 15px;
             font-size: 0.75rem;
@@ -247,7 +297,7 @@
         }
 
         .privacy-title {
-            color: var(--neon-blue);
+            color: var(--primary-blue);
             font-weight: bold;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -319,6 +369,7 @@
         </div>
     </div>
 
+    <!-- SEZIONE CLIENTE -->
     <div class="section">
         <h2 class="section-title">Responsabile dell'Impianto Termico (Cliente Finale)</h2>
         <div class="grid-2">
@@ -349,6 +400,7 @@
         </div>
     </div>
 
+    <!-- SEZIONE GENERATORE -->
     <div class="section">
         <h2 class="section-title">Identificazione del Generatore Installato</h2>
         <div class="grid-3">
@@ -375,6 +427,7 @@
         </div>
     </div>
 
+    <!-- VERIFICA DOCUMENTALE -->
     <div class="section">
         <h2 class="section-title">Verifica Installazione e Documentazione Tecnica</h2>
         <div class="checklist">
@@ -409,6 +462,7 @@
         </div>
     </div>
 
+    <!-- LOCALE ED ESAME VISIVO -->
     <div class="section">
         <h2 class="section-title">Locale di Installazione ed Esame Visivo Impianto</h2>
         <div class="checklist">
@@ -499,6 +553,21 @@
         </div>
     </div>
 
+    <!-- NUOVA SEZIONE: SCHEMA DISEGNO CANNA FUMARIA -->
+    <div class="section">
+        <h2 class="section-title">Schema Tecnico e Layout Canna Fumaria</h2>
+        <div class="text-block">
+            Utilizza lo spazio sottostante (touchscreen o mouse) per disegnare o schematizzare l'andamento della canna fumaria, curve, scarichi condensa e prese d'aria.
+        </div>
+        <div class="canvas-container">
+            <div class="canvas-wrapper">
+                <canvas id="canvas-canna" class="draw-canvas"></canvas>
+            </div>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
+        </div>
+    </div>
+
+    <!-- SPECIFICHE TIPOLOGIA -->
     <div class="section">
         <h2 class="section-title">Specifiche Tipologia Impianto</h2>
         <div class="grid-2">
@@ -507,12 +576,13 @@
                 <input type="text">
             </div>
             <div class="form-group">
-                <label>Schematizzare o descrivere l'installazione</label>
+                <label>Descrizione sintetica installazione</label>
                 <input type="text">
             </div>
         </div>
     </div>
 
+    <!-- NOTE E PRESCRIZIONI -->
     <div class="section">
         <h2 class="section-title">Note e Prescrizioni di Sicurezza</h2>
         <div class="text-block">
@@ -531,6 +601,7 @@
         </div>
     </div>
 
+    <!-- ESITO E DETTAGLI CONTROLLO -->
     <div class="section">
         <h2 class="section-title">Esito e Dettagli Controllo</h2>
         <div class="checklist" style="border-bottom: 1px solid var(--border-color);">
@@ -569,7 +640,7 @@
             </div>
         </div>
 
-        <div class="grid-3" style="border-top: 1px solid var(--border-color); background-color: rgba(0,0,0,0.1);">
+        <div class="grid-3" style="border-top: 1px solid var(--border-color); background-color: #f8f9fa;">
             <div class="form-group">
                 <label>Sostituzione Componenti (Lista parti)</label>
                 <input type="text" placeholder="Codici o descrizione parti">
@@ -579,21 +650,31 @@
                 <input type="text">
             </div>
             <div class="form-group">
-                <label style="color: var(--neon-accent-green); font-weight: bold;">Totale Intervento (€)</label>
-                <input type="text" style="border-color: var(--neon-accent-green);">
+                <label style="color: var(--primary-blue); font-weight: bold;">Totale Intervento (€)</label>
+                <input type="text" style="border-color: var(--primary-blue); font-weight: bold;">
             </div>
         </div>
     </div>
 
+    <!-- SEZIONE FIRME INTERATTIVE COMPILABILI -->
     <div class="signature-section">
         <div class="form-group">
-            <div class="signature-box">FIRMA DEL TECNICO</div>
+            <div class="signature-title">FIRMA DEL TECNICO</div>
+            <div class="signature-pad-container">
+                <canvas id="canvas-firma-tecnico" class="signature-canvas"></canvas>
+            </div>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
         </div>
         <div class="form-group">
-            <div class="signature-box">FIRMA DEL RESPONSABILE IMPIANTO<br><span style="font-size:0.65rem;">(PER PRESA VISIONE)</span></div>
+            <div class="signature-title">FIRMA DEL RESPONSABILE IMPIANTO (Per Presa Visione)</div>
+            <div class="signature-pad-container">
+                <canvas id="canvas-firma-cliente" class="signature-canvas"></canvas>
+            </div>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
         </div>
     </div>
 
+    <!-- PRIVACY -->
     <div class="privacy-box">
         <div class="privacy-title">Informativa ai sensi della disciplina sulla tutela dei dati personali (GDPR)</div>
         <p style="margin: 5px 0;">
@@ -612,10 +693,10 @@
         <div class="privacy-consent">
             <span>Presa visione della sopra esposta informativa, il Cliente:</span>
             <div class="checkbox-options">
-                <label class="checkbox-container" style="color: var(--neon-accent-green);">
+                <label class="checkbox-container" style="color: var(--success-green); font-weight: bold;">
                     <input type="radio" name="privacy_consent" value="SI"> ESPRIME IL CONSENSO
                 </label>
-                <label class="checkbox-container" style="color: #ff4a4a;">
+                <label class="checkbox-container" style="color: #dc3545; font-weight: bold;">
                     <input type="radio" name="privacy_consent" value="NO"> NON ESPRIME IL CONSENSO
                 </label>
             </div>
@@ -635,25 +716,113 @@
     </div>
 
     <script>
+        // Logica di inizializzazione dei Canvas da disegno
+        window.addEventListener("load", () => {
+            initDrawCanvas("canvas-canna", "#004085", 3);
+            initDrawCanvas("canvas-firma-tecnico", "#000000", 2);
+            initDrawCanvas("canvas-firma-cliente", "#000000", 2);
+        });
+
+        function initDrawCanvas(canvasId, strokeColor, lineWidth) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext("2d");
+            
+            // Impostiamo la risoluzione interna del canvas per evitare sgranature
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            // Assicura lo sfondo bianco nativo sul canvas per il motore PDF
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let drawing = false;
+
+            function getCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function startDraw(e) {
+                drawing = true;
+                const coords = getCoords(e);
+                ctx.beginPath();
+                ctx.moveTo(coords.x, coords.y);
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.strokeStyle = strokeColor;
+            }
+
+            function draw(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const coords = getCoords(e);
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                drawing = false;
+            }
+
+            // Mouse Event Listeners
+            canvas.addEventListener("mousedown", startDraw);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDraw);
+            canvas.addEventListener("mouseleave", stopDraw);
+
+            // Touch Event Listeners (Smartphone / Tablet)
+            canvas.addEventListener("touchstart", startDraw, { passive: false });
+            canvas.addEventListener("touchmove", draw, { passive: false });
+            canvas.addEventListener("touchend", stopDraw);
+            
+            // Gestione ridimensionamento finestra per mantenere le proporzioni del disegno
+            window.addEventListener('resize', () => {
+                // Conserva il disegno corrente
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(canvas, 0, 0);
+                
+                // Ridimensiona
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                
+                // Ripristina sfondo e disegno precedente
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+            });
+        }
+
+        function clearCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
         function generaPDF() {
-            // Recupera il valore del ticket e del cliente per personalizzare il nome del file
             const ticket = document.getElementById('txt-ticket').value || 'N-A';
             const cliente = document.getElementById('txt-cliente').value.trim().replace(/\s+/g, '_') || 'Cliente';
             const nomeFile = `Rapporto_Tecnico_Ticket_${ticket}_${cliente}.pdf`;
 
-            // Seleziona l'elemento del modulo da convertire
             const elemento = document.getElementById('modulo-tecnico');
 
-            // Configurazione opzioni per html2pdf.js
             const opzioni = {
                 margin:       10,
                 filename:     nomeFile,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#161b22' },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Generazione del PDF e attivazione del download
             html2pdf().set(opzioni).from(elemento).save();
         }
     </script>
