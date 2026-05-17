@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modulo Rapporto Tecnico</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -106,6 +105,8 @@
             margin-bottom: 20px;
             overflow: hidden;
             background-color: #ffffff;
+            page-break-inside: avoid; /* Dice alla stampante di non tagliare i blocchi a metà */
+            break-inside: avoid;
         }
 
         .section-title {
@@ -158,12 +159,6 @@
             box-sizing: border-box;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
-        }
-
         /* Checkbox List */
         .checklist {
             padding: 15px;
@@ -196,7 +191,6 @@
             align-items: center;
             gap: 5px;
             font-size: 0.85rem;
-            cursor: pointer;
         }
 
         /* Sezione Note e Condizioni */
@@ -251,8 +245,6 @@
             cursor: pointer;
             margin-top: 8px;
         }
-        
-        .btn-clear:hover { background-color: #5a6268; }
 
         /* Firme Funzionanti */
         .signature-section {
@@ -261,6 +253,8 @@
             gap: 40px;
             padding: 20px 15px;
             background-color: #ffffff;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .signature-title {
@@ -295,6 +289,8 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-top: 25px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .privacy-title {
@@ -315,8 +311,40 @@
             gap: 10px;
         }
 
-        .hide-on-pdf {
-            display: none !important;
+        /* =======================================================
+           REGOLE DI STAMPA DI SISTEMA (PER UN PDF PERFETTO)
+           ======================================================= */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .action-bar, .btn-clear {
+                display: none !important; /* Nasconde i bottoni nel PDF */
+            }
+            input[type="text"], input[type="date"], input[type="time"], textarea {
+                border: none;
+                border-bottom: 1px solid #666666; /* Trasforma i box in eleganti linee stampate */
+                border-radius: 0;
+                background: transparent;
+            }
+            .section {
+                border: 1px solid #666666;
+            }
+            .section-title {
+                background: #004085 !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
 
         /* Responsive */
@@ -328,18 +356,16 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .title {
-                max-width: 100%;
-            }
+            .title { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <div class="action-bar">
-        <button class="btn-pdf" onclick="generaPDF()">
+        <button class="btn-pdf" onclick="window.print()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Converti e Salva PDF
+            Stampa o Salva PDF di Sistema
         </button>
     </div>
 
@@ -379,7 +405,7 @@
         <div class="grid-2">
             <div class="form-group">
                 <label>Cognome / Nome</label>
-                <input type="text" id="txt-cliente">
+                <input type="text">
             </div>
             <div class="form-group">
                 <label>Indirizzo</label>
@@ -563,7 +589,7 @@
             <div class="canvas-wrapper">
                 <canvas id="canvas-canna" class="draw-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-canna')">Cancella Disegno</button>
         </div>
     </div>
 
@@ -589,9 +615,6 @@
         <div class="text-block" style="font-style: italic;">
             Il tecnico declina ogni responsabilità per sinistri a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive.
         </div>
-        <div class="text-block">
-            In presenza di carenze riscontrate e non eliminate, il responsabile dell'impianto si impegna, entro breve tempo, a provvedere alla loro risoluzione dandone notizia all'operatore incaricato.
-        </div>
         
         <div class="textarea-full">
             <label>NOTE / DETTAGLI AGGIUNTIVI</label>
@@ -610,20 +633,6 @@
                     <label class="checkbox-container"><input type="radio" name="esito" value="PRESCRIZIONI"> PRESCRIZIONI</label>
                 </div>
             </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Controllo Stufa eseguito con esito positivo?</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="ctrl_stufa" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="ctrl_stufa" value="NO"> NO</label>
-                </div>
-            </div>
-            <div class="checklist-item">
-                <span class="checklist-label">Controllo / Pulizia Canna Fumaria eseguito?</span>
-                <div class="checkbox-options">
-                    <label class="checkbox-container"><input type="radio" name="ctrl_canna" value="SI"> SI</label>
-                    <label class="checkbox-container"><input type="radio" name="ctrl_canna" value="NO"> NO</label>
-                </div>
-            </div>
         </div>
 
         <div class="grid-2">
@@ -640,7 +649,7 @@
         <div class="grid-3" style="border-top: 1px solid var(--border-color); background-color: #f8f9fa;">
             <div class="form-group">
                 <label>Sostituzione Componenti (Lista parti)</label>
-                <input type="text" placeholder="Codici o descrizione parti">
+                <input type="text">
             </div>
             <div class="form-group">
                 <label>Altro / Varie</label>
@@ -659,43 +668,29 @@
             <div class="signature-pad-container">
                 <canvas id="canvas-firma-tecnico" class="signature-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-tecnico')">Cancella</button>
         </div>
         <div class="form-group">
             <div class="signature-title">FIRMA DEL RESPONSABILE IMPIANTO</div>
             <div class="signature-pad-container">
                 <canvas id="canvas-firma-cliente" class="signature-canvas"></canvas>
             </div>
-            <button type="button" class="btn-clear pdf-ignore-btn" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
+            <button type="button" class="btn-clear" onclick="clearCanvas('canvas-firma-cliente')">Cancella</button>
         </div>
     </div>
 
     <div class="privacy-box">
-        <div class="privacy-title">Informativa ai sensi della disciplina sulla tutela dei dati personali (GDPR)</div>
-        <p style="margin: 5px 0;">
-            Il titolare del trattamento dei suoi dati personali rilascia la presente informativa nel rispetto della disciplina europea e italiana.
-        </p>
+        <div class="privacy-title">Informativa sulla Privacy (GDPR)</div>
         <div class="privacy-consent">
-            <span>Presa visione della sopra esposta informativa, il Cliente:</span>
+            <span>Presa visione dell'informativa, il Cliente:</span>
             <div class="checkbox-options">
-                <label class="checkbox-container" style="color: var(--success-green); font-weight: bold;">
-                    <input type="radio" name="privacy_consent" value="SI"> ESPRIME IL CONSENSO
-                </label>
-                <label class="checkbox-container" style="color: #dc3545; font-weight: bold;">
-                    <input type="radio" name="privacy_consent" value="NO"> NON ESPRIME IL CONSENSO
-                </label>
+                <label><input type="radio" name="privacy" value="SI"> ACCETTA</label>
+                <label><input type="radio" name="privacy" value="NO"> DECLINA</label>
             </div>
         </div>
     </div>
 
 </div>
-
-    <div class="action-bar" style="margin-top: 20px; margin-bottom: 40px;">
-        <button class="btn-pdf" onclick="generaPDF()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Converti e Salva PDF
-        </button>
-    </div>
 
     <script>
         window.addEventListener("load", () => {
@@ -713,31 +708,17 @@
         function initDrawCanvas(canvasId, strokeColor, lineWidth) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext("2d");
-            
             canvas.width = canvas.clientWidth;
             canvas.height = canvas.clientHeight;
-
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             let drawing = false;
-
             function getCoords(e) {
                 const rect = canvas.getBoundingClientRect();
-                let clientX, clientY;
-                
-                if (e.touches && e.touches.length > 0) {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-                
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
+                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
             function startDraw(e) {
@@ -747,7 +728,6 @@
                 ctx.moveTo(coords.x, coords.y);
                 ctx.lineWidth = lineWidth;
                 ctx.lineCap = "round";
-                ctx.lineJoin = "round";
                 ctx.strokeStyle = strokeColor;
                 if(e.touches) e.preventDefault();
             }
@@ -766,7 +746,6 @@
             canvas.addEventListener("mousemove", draw);
             canvas.addEventListener("mouseup", stopDraw);
             canvas.addEventListener("mouseleave", stopDraw);
-
             canvas.addEventListener("touchstart", startDraw, { passive: false });
             canvas.addEventListener("touchmove", draw, { passive: false });
             canvas.addEventListener("touchend", stopDraw);
@@ -777,12 +756,9 @@
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvas.width;
             tempCanvas.height = canvas.height;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(canvas, 0, 0);
-            
+            tempCanvas.getContext('2d').drawImage(canvas, 0, 0);
             canvas.width = canvas.clientWidth;
             canvas.height = canvas.clientHeight;
-            
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -794,76 +770,6 @@
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function congelaDatiPerPDF() {
-            const inputs = document.querySelectorAll('#modulo-tecnico input[type="text"], #modulo-tecnico input[type="date"], #modulo-tecnico input[type="time"]');
-            inputs.forEach(input => {
-                input.setAttribute('value', input.value || '');
-            });
-
-            const textareas = document.querySelectorAll('#modulo-tecnico textarea');
-            textareas.forEach(textarea => {
-                textarea.innerHTML = textarea.value || '';
-            });
-
-            const radios = document.querySelectorAll('#modulo-tecnico input[type="radio"]');
-            radios.forEach(radio => {
-                if (radio.checked) {
-                    radio.setAttribute('checked', 'checked');
-                } else {
-                    radio.removeAttribute('checked');
-                }
-            });
-        }
-
-        function generaPDF() {
-            try {
-                congelaDatiPerPDF();
-
-                const clearButtons = document.querySelectorAll('.pdf-ignore-btn');
-                clearButtons.forEach(btn => btn.classList.add('hide-on-pdf'));
-
-                const ticketInput = document.getElementById('txt-ticket');
-                const ticket = ticketInput ? (ticketInput.value || 'N-A') : 'N-A';
-                
-                const clienteInput = document.getElementById('txt-cliente');
-                const cliente = clienteInput ? (clienteInput.value.trim().replace(/\s+/g, '_') || 'Cliente') : 'Cliente';
-                
-                const nomeFile = `Rapporto_Tecnico_Ticket_${ticket}_${cliente}.pdf`;
-                const elemento = document.getElementById('modulo-tecnico');
-
-                // CALCOLO DINAMICO DEL FOGLIO UNICO CONTINUO (FORMATO PAGINA WEB)
-                // Rileva l'altezza esatta occupata dal modulo a schermo e la converte in millimetri
-                const altezzaPx = elemento.scrollHeight;
-                const larghezzaPx = elemento.scrollWidth || 900;
-                const ratio = altezzaPx / larghezzaPx;
-                const larghezzaMm = 210; // Larghezza standard A4
-                const altezzaMm = larghezzaMm * ratio; // Altezza proporzionale infinita
-
-                const opzioni = {
-                    margin:       5,
-                    filename:     nomeFile,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { 
-                        scale: 2, 
-                        useCORS: true, 
-                        backgroundColor: '#ffffff',
-                        logging: false
-                    },
-                    // Imposta una pagina singola personalizzata che contiene tutto il blocco
-                    jsPDF:        { unit: 'mm', format: [larghezzaMm, altezzaMm], orientation: 'portrait' }
-                };
-
-                html2pdf().set(opzioni).from(elemento).save().then(() => {
-                    clearButtons.forEach(btn => btn.classList.remove('hide-on-pdf'));
-                }).catch(err => {
-                    console.error("Errore:", err);
-                    clearButtons.forEach(btn => btn.classList.remove('hide-on-pdf'));
-                });
-            } catch (error) {
-                console.error("Errore generale:", error);
-            }
         }
     </script>
 </body>
