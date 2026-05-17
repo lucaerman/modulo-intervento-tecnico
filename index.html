@@ -100,18 +100,12 @@
             margin-top: 15px;
         }
 
-        /* EVITA I SALTERELLI DI PAGINA BRUTTI NEL PDF */
-        .section, .header, .signature-section, .privacy-box {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            background-color: #ffffff;
-        }
-
         .section {
             border: 1px solid var(--border-color);
             border-radius: 6px;
             margin-bottom: 20px;
             overflow: hidden;
+            background-color: #ffffff;
         }
 
         .section-title {
@@ -266,6 +260,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 40px;
             padding: 20px 15px;
+            background-color: #ffffff;
         }
 
         .signature-title {
@@ -320,7 +315,6 @@
             gap: 10px;
         }
 
-        /* Stile specifico per nascondere i bottoni di cancellazione durante la generazione del PDF */
         .hide-on-pdf {
             display: none !important;
         }
@@ -709,7 +703,6 @@
             initDrawCanvas("canvas-firma-tecnico", "#000000", 2);
             initDrawCanvas("canvas-firma-cliente", "#000000", 2);
             
-            // Adatta i canvas se lo schermo cambia dimensione (es. rotazione telefono)
             window.addEventListener('resize', () => {
                 resizeCanvas("canvas-canna");
                 resizeCanvas("canvas-firma-tecnico");
@@ -721,7 +714,6 @@
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext("2d");
             
-            // Imposta dimensioni reali basate sul CSS
             canvas.width = canvas.clientWidth;
             canvas.height = canvas.clientHeight;
 
@@ -770,13 +762,11 @@
 
             function stopDraw() { drawing = false; }
 
-            // Mouse
             canvas.addEventListener("mousedown", startDraw);
             canvas.addEventListener("mousemove", draw);
             canvas.addEventListener("mouseup", stopDraw);
             canvas.addEventListener("mouseleave", stopDraw);
 
-            // Touch screen (Smartphone e Tablet)
             canvas.addEventListener("touchstart", startDraw, { passive: false });
             canvas.addEventListener("touchmove", draw, { passive: false });
             canvas.addEventListener("touchend", stopDraw);
@@ -784,21 +774,18 @@
 
         function resizeCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
-            // Salva il vecchio disegno prima di ridimensionare
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvas.width;
             tempCanvas.height = canvas.height;
             const tempCtx = tempCanvas.getContext('2d');
             tempCtx.drawImage(canvas, 0, 0);
             
-            // Ridimensiona
             canvas.width = canvas.clientWidth;
             canvas.height = canvas.clientHeight;
             
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // Ripristina il disegno adattandolo
             ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
         }
 
@@ -810,19 +797,16 @@
         }
 
         function congelaDatiPerPDF() {
-            // Salva i testi scritti negli input
             const inputs = document.querySelectorAll('#modulo-tecnico input[type="text"], #modulo-tecnico input[type="date"], #modulo-tecnico input[type="time"]');
             inputs.forEach(input => {
                 input.setAttribute('value', input.value || '');
             });
 
-            // Salva le aree di testo lunghe
             const textareas = document.querySelectorAll('#modulo-tecnico textarea');
             textareas.forEach(textarea => {
                 textarea.innerHTML = textarea.value || '';
             });
 
-            // Salva la selezione dei bottoni Radio
             const radios = document.querySelectorAll('#modulo-tecnico input[type="radio"]');
             radios.forEach(radio => {
                 if (radio.checked) {
@@ -835,10 +819,8 @@
 
         function generaPDF() {
             try {
-                // Congela i dati immessi dall'utente nell'interfaccia prima della cattura
                 congelaDatiPerPDF();
 
-                // Nasconde temporaneamente i bottoni "Cancella" per non averli nel PDF
                 const clearButtons = document.querySelectorAll('.pdf-ignore-btn');
                 clearButtons.forEach(btn => btn.classList.add('hide-on-pdf'));
 
@@ -849,11 +831,18 @@
                 const cliente = clienteInput ? (clienteInput.value.trim().replace(/\s+/g, '_') || 'Cliente') : 'Cliente';
                 
                 const nomeFile = `Rapporto_Tecnico_Ticket_${ticket}_${cliente}.pdf`;
-
                 const elemento = document.getElementById('modulo-tecnico');
 
+                // CALCOLO DINAMICO DEL FOGLIO UNICO CONTINUO (FORMATO PAGINA WEB)
+                // Rileva l'altezza esatta occupata dal modulo a schermo e la converte in millimetri
+                const altezzaPx = elemento.scrollHeight;
+                const larghezzaPx = elemento.scrollWidth || 900;
+                const ratio = altezzaPx / larghezzaPx;
+                const larghezzaMm = 210; // Larghezza standard A4
+                const altezzaMm = larghezzaMm * ratio; // Altezza proporzionale infinita
+
                 const opzioni = {
-                    margin:       8,
+                    margin:       5,
                     filename:     nomeFile,
                     image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { 
@@ -862,20 +851,18 @@
                         backgroundColor: '#ffffff',
                         logging: false
                     },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    // Imposta una pagina singola personalizzata che contiene tutto il blocco
+                    jsPDF:        { unit: 'mm', format: [larghezzaMm, altezzaMm], orientation: 'portrait' }
                 };
 
-                // Esegui la generazione del PDF usando la libreria html2pdf
                 html2pdf().set(opzioni).from(elemento).save().then(() => {
-                    // Ripristina i bottoni "Cancella" sul modulo a schermo una volta salvato il PDF
                     clearButtons.forEach(btn => btn.classList.remove('hide-on-pdf'));
                 }).catch(err => {
-                    console.error("Errore durante il salvataggio del PDF:", err);
+                    console.error("Errore:", err);
                     clearButtons.forEach(btn => btn.classList.remove('hide-on-pdf'));
                 });
             } catch (error) {
-                console.error("Errore generale nella funzione generaPDF:", error);
-                alert("Si è verificato un errore durante la generazione del PDF. Controlla la console.");
+                console.error("Errore generale:", error);
             }
         }
     </script>
