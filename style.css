@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Reset e Struttura Base PWA
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+    padding-top: 60px; /* Spazio per la toolbar fissa */
+}
+
+/* Toolbar Superiore (Esclusa dal PDF) */
+.toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.toolbar button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #007aff;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.toolbar button.btn-clear {
+    background-color: #ff3b30;
+}
+
+/* Container di Pagina Stile A4 */
+.page {
+    background-color: #ffffff;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    padding: 15mm;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Layout Modulo
+   ========================================================================== */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #1d1d1f;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.left-title h1 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.left-title h2 {
+    font-size: 11px;
+    color: #8e8e93;
+    margin-top: 5px;
+}
+
+.ticket-box {
+    border: 1px solid #d1d1d6;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fbfbfd;
+}
+
+.field-inline {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.field-inline:last-child {
+    margin-bottom: 0;
+}
+
+.field-inline label {
+    font-size: 11px;
+    font-weight: 600;
+    width: 90px;
+}
+
+.field-inline input {
+    border: none;
+    border-bottom: 1px dashed #8e8e93;
+    background: transparent;
+    font-size: 12px;
+    padding: 2px;
+    width: 110px;
+}
+
+/* Layout a Due Colonne */
+.columns {
+    display: flex;
+    gap: 15px;
+}
+
+.left-column {
+    flex: 1.1;
+}
+
+.right-column {
+    flex: 0.9;
+}
+
+/* Titoli delle Sezioni */
+.section-title {
+    background-color: #1d1d1f;
+    color: white;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 12px 0 8px 0;
+    border-radius: 4px;
+}
+
+.section-title-table {
+    background-color: #1d1d1f;
+    color: white;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.table-headers span {
+    margin-left: 20px;
+    display: inline-block;
+    width: 25px;
+    text-align: center;
+}
+
+/* Campi Lineari */
+.line-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.line-field label {
+    font-size: 11px;
+    font-weight: 600;
+    width: 100px;
+    color: #3a3a3c;
+}
+
+.line-field input {
+    flex: 1;
+    border: none;
+    border-bottom: 1px solid #d1d1d6;
+    font-size: 12px;
+    padding: 3px 0;
+}
+
+/* Checkbox di Controllo Rapido */
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    margin: 10px 0;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.check-item label {
+    font-weight: normal;
+}
+
+/* Canvas Disegno e Firme */
+.schema-container, .firma-container {
+    border: 1px solid #d1d1d6;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.canvas-label {
+    font-size: 9px;
+    font-weight: bold;
+    color: #8e8e93;
+    padding: 4px 8px;
+    border-bottom: 1px solid #f2f2f7;
+    background-color: #fbfbfd;
+    border-radius: 8px 8px 0 0;
+}
+
+canvas {
+    display: block;
+    cursor: crosshair;
+}
+
+/* ==========================================================================
+   Tabella di Verifica (Destra)
+   ========================================================================== */
+.check-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+    margin-bottom: 10px;
+}
+
+.check-table td {
+    border: 1px solid #d1d1d6;
+    padding: 5px 6px;
+    vertical-align: middle;
+}
+
+.check-table tr td:first-child {
+    width: 80%;
+}
+
+.check-table tr td:not(:first-child) {
+    text-align: center;
+    width: 10%;
+}
+
+.table-subcat td {
+    background-color: #f2f2f7;
+    font-weight: bold;
+    font-size: 9.5px;
+    color: #3a3a3c;
+}
+
+/* Elementi di Testo Legali e Note */
+.legal-disclaimer {
+    font-size: 8px;
+    color: #48484a;
+    line-height: 1.3;
+    text-align: justify;
+    margin-bottom: 10px;
+}
+
+.notes-title {
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.notes-checks {
+    display: flex;
+    gap: 15px;
+    font-size: 10px;
+    margin: 4px 0;
+}
+
+.textarea-field textarea,
+textarea.big-notes {
+    width: 100%;
+    border: 1px solid #d1d1d6;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 11px;
+    resize: none;
+}
+
+textarea.big-notes {
+    height: 60px;
+}
+
+/* Privacy Box */
+.privacy-box {
+    border: 1px solid #e5e5ea;
+    border-radius: 6px;
+    padding: 8px;
+    background-color: #fbfbfd;
+    margin-top: 10px;
+}
+
+.privacy-box h3 {
+    font-size: 8px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.privacy-box p {
+    font-size: 7.5px;
+    color: #48484a;
+    line-height: 1.2;
+    text-align: justify;
+}
+
+.privacy-consent-section {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px dashed #d1d1d6;
+    padding-top: 4px;
+}
+
+.privacy-consent {
+    display: flex;
+    gap: 10px;
+}
+
+/* Adattamenti per Schermi Più Piccoli */
+@media (max-width: 215mm) {
+    body { padding-top: 70px; }
+    .page {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+        min-height: auto;
+    }
+    .columns { flex-direction: column; }
+    .top-row { flex-direction: column; gap: 10px; }
+}
