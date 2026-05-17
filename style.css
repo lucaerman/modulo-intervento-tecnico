@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Reset e Struttura Base PWA (Modificato per Stampa)
+   Reset e Struttura Base PWA
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -10,78 +10,267 @@
 
 body {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    color: #1e293b;
+    color: #1e293b; /* Testo principale in blu ardesia scuro */
     padding-top: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    -webkit-print-color-adjust: exact; /* Forza la stampa dei colori di sfondo */
-    print-color-adjust: exact;
 }
 
-/* Container di Pagina (A4 Rigido) */
+/* Toolbar Superiore */
+.toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    z-index: 1000;
+}
+
+.toolbar button {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); /* Blu Navy */
+    color: white;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+    transition: all 0.2s ease;
+}
+
+.toolbar button.btn-clear {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+}
+
+/* Container di Pagina */
 .page {
     background-color: #ffffff;
     width: 210mm;
-    height: 297mm; /* Cambiato da min-height a height per bloccare il formato A4 */
+    min-height: 297mm;
     padding: 12mm;
     box-shadow: 0 10px 30px rgba(30, 58, 138, 0.1);
     border-radius: 16px;
     box-sizing: border-box;
     margin-bottom: 40px;
     border: 1px solid #e2e8f0;
-    position: relative;
-    page-break-after: always; /* Forza la fine della pagina */
-    overflow: hidden; /* Impedisce a contenuti extra di creare una seconda pagina vuota */
 }
 
 /* ==========================================================================
-   Regole di Stampa Professionali
+   Layout Intestazione (MODIFICATO COLORE BLU)
    ========================================================================== */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1e3a8a; /* Linea blu sotto titolo */
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.left-title h1 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #1e3a8a; /* Titolo Blu */
+}
+
+.left-title h2 {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 3px;
+    font-weight: 500;
+}
+
+.ticket-box {
+    border: 1px solid #1e3a8a; /* Bordo Ticket Blu */
+    border-radius: 10px;
+    padding: 8px 12px;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-inline label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1e3a8a; /* Etichette Blu */
+    margin-right: 8px;
+}
+
+.field-inline input {
+    border: none;
+    border-bottom: 1px dashed #94a3b8;
+    background: transparent;
+    font-size: 11px;
+    padding: 1px;
+    width: 100px;
+    text-align: center;
+    outline: none;
+    color: #1e293b;
+}
+
+/* ==========================================================================
+   Colonne e Titoli Sezione (MODIFICATO COLORE BLU)
+   ========================================================================== */
+.columns {
+    display: flex;
+    gap: 16px;
+}
+
+.section-title {
+    background-color: #1e3a8a; /* Sfondo Titoli Blu */
+    color: white;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin: 10px 0 6px 0;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.section-title-table {
+    background-color: #1e3a8a; /* Sfondo Tabella Blu */
+    color: white;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    border-radius: 4px 4px 0 0;
+}
+
+.table-headers span {
+    display: inline-block;
+    width: 30px;
+    text-align: center;
+}
+
+.line-field label {
+    font-size: 10px;
+    font-weight: 700;
+    width: 85px;
+    color: #1e3a8a; /* Etichette campi Blu */
+}
+
+.line-field input {
+    flex: 1;
+    border: none;
+    border-bottom: 1px solid #cbd5e1;
+    font-size: 11px;
+    padding: 2px 0;
+    outline: none;
+    background-color: transparent;
+    color: #1e293b;
+}
+
+.line-field input:focus {
+    border-bottom-color: #3b82f6; /* Blu più chiaro al focus */
+}
+
+/* Checkbox */
+.check-item {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+/* Container Canvas */
+.schema-container, .firma-container {
+    border: 1px solid #1e3a8a; /* Bordo canvas Blu */
+    border-radius: 10px;
+    background-color: #ffffff;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.canvas-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-bottom: 1px solid #1e3a8a;
+    background-color: #3b82f6; /* Intestazione canvas azzurra */
+}
+
+/* Tabella Verifiche */
+.check-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}
+
+.check-table td {
+    border: 1px solid #cbd5e1;
+    padding: 4px 5px;
+    vertical-align: middle;
+}
+
+.check-table input[type="checkbox"] {
+    accent-color: #1e3a8a; /* Colore spunta Blu */
+}
+
+.table-subcat td {
+    background-color: #eff6ff; /* Sfondo righe categorie azzurro chiaro */
+    font-weight: 700;
+    font-size: 9px;
+    color: #1e3a8a; /* Testo categorie Blu */
+    padding: 3px 5px;
+}
+
+/* Note e Disclaimer */
+.legal-disclaimer {
+    font-size: 7.5px;
+    color: #475569;
+    line-height: 1.2;
+}
+
+.notes-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+textarea {
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.privacy-box {
+    border: 1px solid #1e3a8a;
+    background-color: #f0f7ff;
+}
+
+.privacy-box h3 {
+    color: #1e3a8a;
+}
+
+.privacy-consent-section {
+    border-top: 1px dashed #1e3a8a;
+}
+
+/* Stampa */
 @media print {
-    /* Imposta i margini della stampante a zero per gestire tutto tramite il .page */
-    @page {
-        size: A4 portrait;
-        margin: 0;
-    }
-
-    html, body {
-        width: 210mm;
-        height: 297mm;
-        background: #ffffff !important; /* Rimuove il gradiente di sfondo sullo schermo */
-        padding-top: 0 !important; /* Rimuove lo spazio della toolbar */
-    }
-
-    /* Nasconde la toolbar superiore durante la stampa */
-    .toolbar {
-        display: none !important;
-    }
-
-    /* Adatta il container perfettamente alla stampa */
-    .page {
-        margin: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        width: 210mm !important;
-        height: 297mm !important;
-    }
-
-    /* Forza il browser a stampare i colori e i gradienti scelti */
     .section-title, .section-title-table {
         background-color: #1e3a8a !important;
-        color: #ffffff !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact;
     }
-    
-    .table-subcat td {
-        background-color: #eff6ff !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
     .left-title h1, .ticket-box {
         color: #1e3a8a !important;
         border-color: #1e3a8a !important;
