@@ -805,5 +805,13 @@
             window.print();
         }
     </script>
+    <script>
+        // Attivazione del Service Worker per l'installazione su smartphone
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker Registrato con Successo!'))
+                .catch((err) => console.error('Errore registrazione Service Worker:', err));
+        }
+    </script>
 </body>
 </html>
