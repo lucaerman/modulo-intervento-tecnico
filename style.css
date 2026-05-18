@@ -447,3 +447,43 @@ button {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   Filigrana Logo sullo Sfondo (Non Invasiva)
+   ========================================================================== */
+.page {
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  
+  /* Inserisci qui il nome esatto del file del tuo logo (es: logo.png o logo.PNG) */
+  background-image: url('logo.png'); 
+  background-repeat: no-repeat;
+  background-position: center 35%; /* Centrato verticalmente rispetto alla parte tecnica */
+  background-size: 32%; /* Dimensione della filigrana */
+  
+  /* Opacità molto bassa per l'effetto trasparenza (0.06 = 6%) */
+  opacity: 0.06; 
+  
+  /* Converte il logo in bianco e nero per uniformarlo allo stile del foglio */
+  filter: grayscale(100%); 
+  
+  /* Si fonde perfettamente con lo sfondo bianco */
+  mix-blend-mode: multiply; 
+  
+  /* Impedisce alla filigrana di bloccare i clic sui checkbox o sui testi */
+  pointer-events: none; 
+  z-index: 0;
+}
+
+/* Mantiene tutti gli elementi del modulo sopra la filigrana */
+.page > * {
+  position: relative;
+  z-index: 1;
+}
+
