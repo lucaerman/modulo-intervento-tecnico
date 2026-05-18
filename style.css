@@ -466,10 +466,10 @@ button {
   
   background-repeat: no-repeat;
   background-position: center center; /* Centrato perfettamente sia in alto/basso che destra/sinistra */
-  background-size: 40%; /* Dimensione ideale: copre il centro senza toccare i bordi esterni */
+  background-size: 70%; /* Dimensione ideale: copre il centro senza toccare i bordi esterni */
   
   /* Opacità ultra-leggera (0.04 = 4%) per garantire la massima leggibilità dei testi sovrastanti */
-  opacity: 0.04; 
+  opacity: 0.50; 
   
   /* Trasforma il logo in bianco e nero per un look professionale ed elegante */
   filter: grayscale(100%); 
