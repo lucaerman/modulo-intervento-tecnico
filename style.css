@@ -449,7 +449,7 @@ button {
 }
 
 /* ==========================================================================
-   Filigrana Logo sullo Sfondo (Non Invasiva)
+   Filigrana Logo sullo Sfondo (Perfettamente Centrata e Sfumata)
    ========================================================================== */
 .page {
   position: relative;
@@ -461,27 +461,28 @@ button {
   position: absolute;
   inset: 0;
   
-  /* Inserisci qui il nome esatto del file del tuo logo (es: logo.png o logo.PNG) */
+  /* Sostituisci 'logo.png' con il nome esatto e l'estensione del tuo file */
   background-image: url('logo.png'); 
+  
   background-repeat: no-repeat;
-  background-position: center 35%; /* Centrato verticalmente rispetto alla parte tecnica */
-  background-size: 32%; /* Dimensione della filigrana */
+  background-position: center center; /* Centrato perfettamente sia in alto/basso che destra/sinistra */
+  background-size: 40%; /* Dimensione ideale: copre il centro senza toccare i bordi esterni */
   
-  /* Opacità molto bassa per l'effetto trasparenza (0.06 = 6%) */
-  opacity: 0.06; 
+  /* Opacità ultra-leggera (0.04 = 4%) per garantire la massima leggibilità dei testi sovrastanti */
+  opacity: 0.04; 
   
-  /* Converte il logo in bianco e nero per uniformarlo allo stile del foglio */
+  /* Trasforma il logo in bianco e nero per un look professionale ed elegante */
   filter: grayscale(100%); 
   
-  /* Si fonde perfettamente con lo sfondo bianco */
+  /* Permette una fusione perfetta con il bianco dello sfondo della pagina */
   mix-blend-mode: multiply; 
   
-  /* Impedisce alla filigrana di bloccare i clic sui checkbox o sui testi */
+  /* FONDAMENTALE: impedisce al logo di intercettare i click sui checkbox, canvas o campi di testo */
   pointer-events: none; 
   z-index: 0;
 }
 
-/* Mantiene tutti gli elementi del modulo sopra la filigrana */
+/* Mantiene tutti gli elementi del modulo (testi, input, tabelle) sopra la filigrana */
 .page > * {
   position: relative;
   z-index: 1;
