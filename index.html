@@ -45,8 +45,21 @@
 
 <div class="toolbar">
   <button onclick="downloadPDF()">Scarica PDF</button>
-  <button onclick="clearAllCanvases()" class="btn-clear">
-    Cancella Disegni e Firme
+
+  <button onclick="clearCanvas('canvas-schema')">
+    Cancella Schema
+  </button>
+
+  <button onclick="clearCanvas('canvas-firma-tecnico')">
+    Cancella Firma Tecnico
+  </button>
+
+  <button onclick="clearCanvas('canvas-firma-cliente')">
+    Cancella Firma Cliente
+  </button>
+
+  <button onclick="clearAllCanvases()">
+    Cancella Tutto
   </button>
 </div>
 
@@ -70,7 +83,7 @@
 
       <div class="field-inline">
         <label>Data Intervento</label>
-        <input type="text" placeholder="    /    /    ">
+        <input type="text" id=data-intervento">
       </div>
 
       <div class="field-inline">
@@ -484,15 +497,18 @@ function initCanvas(canvasId, targetHeight) {
     ctx.moveTo(pos.x, pos.y);
   }
 
-  function draw(e) {
+ function draw(e) {
+  if (!drawing) return;
 
-    if (!drawing) return;
+  const pos = getPosition(e);
 
-    const pos = getPosition(e);
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
 
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-  }
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+}
 
   function stopDrawing() {
 
@@ -548,13 +564,33 @@ function initCanvas(canvasId, targetHeight) {
 ========================================================= */
 
 function setupCanvases() {
-
   Object.entries(canvasSettings).forEach(([id, height]) => {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+
+    const data = canvas.toDataURL(); // salva disegno
+
     initCanvas(id, height);
+
+    const img = new Image();
+    img.onload = () => {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = data;
   });
 }
 
 window.onload = function () {
+
+  // DATA AUTOMATICA
+const oggi = new Date();
+const giorno = String(oggi.getDate()).padStart(2, '0');
+const mese = String(oggi.getMonth() + 1).padStart(2, '0');
+const anno = oggi.getFullYear();
+
+  document.querySelector('input[type="text"]').value = `${giorno}/${mese}/${anno}`;
+  document.getElementById('data-intervento').value = formatDateToday();
 
   // Service Worker
   if ('serviceWorker' in navigator) {
@@ -633,6 +669,35 @@ function downloadPDF() {
 
   html2pdf()
     .set(opt)
+    .from(element)
+    .save();
+}
+
+  function clearCanvas(id) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function clearAllCanvases() {
+  Object.keys(canvasSettings).forEach(id => {
+    const canvas = document.getElementById(id);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+}
+
+function downloadPDF() {
+  const element = document.getElementById('modulo');
+
+  html2pdf()
+    .set({
+      margin: 0,
+      filename: 'rapporto.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    })
     .from(element)
     .save();
 }
