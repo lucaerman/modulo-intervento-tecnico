@@ -14,10 +14,11 @@ body {
   color: #000;
 }
 
-/* Toolbar Superiore */
 .toolbar {
-  text-align: center;
-  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
 }
 
 button {
