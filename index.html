@@ -713,6 +713,52 @@ function downloadPDF() {
     .save();
 }
 
+   // Genera PDF
+    const worker = html2pdf().set(opt).from(element);
+
+    // Blob PDF
+    const pdfBlob = await worker.output('blob');
+
+    // File finale con nome dinamico
+    const file = new File(
+      [pdfBlob],
+      nomeFile,
+      { type: 'application/pdf' }
+    );
+
+    // Condivisione Smartphone (WhatsApp, Telegram, Mail ecc.)
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({ files: [file] })
+    ) {
+
+      await navigator.share({
+        files: [file],
+        title: 'Rapporto Tecnico',
+        text: 'Invio rapporto tecnico'
+      });
+
+    } else {
+
+      // Download PC
+      await worker.save();
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    // Fallback sicurezza
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .save();
+
+  }
+}
+
 </script>
 
 </body>
