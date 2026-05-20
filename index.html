@@ -116,10 +116,10 @@
         <input type="text">
       </div>
 
-      <div class="line-field">
-        <label>Indirizzo</label>
-        <input type="text">
-      </div>
+  <div class="line-field">
+  <label>Cognome/Nome</label>
+  <input type="text" id="cliente-nome">
+</div>
 
       <div class="line-field">
         <label>Telefono</label>
@@ -640,37 +640,54 @@ function clearAllCanvases() {
 /* =========================================================
    PDF
 ========================================================= */
-
 function downloadPDF() {
 
   const element = document.getElementById('modulo');
 
-  const opt = {
-    margin: 0,
-    filename: 'rapporto-tecnico-firmato.pdf',
+  // PRENDE NOME CLIENTE
+  const nomeCliente =
+    document.getElementById('cliente-nome').value.trim() || 'cliente';
 
-    image: {
-      type: 'jpeg',
-      quality: 1
-    },
+  // PRENDE DATA
+  const dataIntervento =
+    document.getElementById('data-intervento').value.trim() || 'data';
 
-    html2canvas: {
-      scale: 2,
-      useCORS: true
-    },
+  // PULIZIA TESTO PER NOME FILE
+  const nomePulito = nomeCliente
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]/g, '');
 
-    jsPDF: {
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
-    }
-  };
+  const dataPulita = dataIntervento.replace(/\//g, '-');
+
+  // NOME FILE DINAMICO
+  const nomeFile =
+    `rapporto-${nomePulito}-${dataPulita}.pdf`;
 
   html2pdf()
-    .set(opt)
+    .set({
+      margin: 0,
+      filename: nomeFile,
+
+      image: {
+        type: 'jpeg',
+        quality: 1
+      },
+
+      html2canvas: {
+        scale: 2,
+        useCORS: true
+      },
+
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      }
+    })
     .from(element)
     .save();
 }
+
 
   function clearCanvas(id) {
   const canvas = document.getElementById(id);
