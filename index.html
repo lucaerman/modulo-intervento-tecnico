@@ -683,50 +683,76 @@ function downloadPDF() {
     .save();
 }
 
+/* =========================================================
+   PDF + CONDIVISIONE
+========================================================= */
 
-  function clearCanvas(id) {
-  const canvas = document.getElementById(id);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+async function downloadPDF() {
 
-function clearAllCanvases() {
-  Object.keys(canvasSettings).forEach(id => {
-    const canvas = document.getElementById(id);
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  });
-}
+  try {
 
-function downloadPDF() {
-  const element = document.getElementById('modulo');
+    const element = document.getElementById('modulo');
 
-  html2pdf()
-    .set({
+    // Nome cliente
+    const nomeCliente =
+      document.getElementById('cliente-nome').value.trim() || 'cliente';
+
+    // Data
+    const dataIntervento =
+      document.getElementById('data-intervento').value.trim() || 'data';
+
+    // Pulizia nome
+    const nomePulito = nomeCliente
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]/g, '');
+
+    const dataPulita =
+      dataIntervento.replace(/\//g, '-');
+
+    // Nome PDF finale
+    const nomeFile =
+      `RT-${nomePulito}-${dataPulita}.pdf`;
+
+    // Opzioni PDF
+    const opt = {
+
       margin: 0,
-      filename: 'rapporto.pdf',
-      image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    })
-    .from(element)
-    .save();
-}
 
-   // Genera PDF
-    const worker = html2pdf().set(opt).from(element);
+      filename: nomeFile,
+
+      image: {
+        type: 'jpeg',
+        quality: 1
+      },
+
+      html2canvas: {
+        scale: 2,
+        useCORS: true
+      },
+
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      }
+    };
+
+    // Genera PDF
+    const worker =
+      html2pdf().set(opt).from(element);
 
     // Blob PDF
-    const pdfBlob = await worker.output('blob');
+    const pdfBlob =
+      await worker.output('blob');
 
-    // File finale con nome dinamico
+    // File finale
     const file = new File(
       [pdfBlob],
       nomeFile,
       { type: 'application/pdf' }
     );
 
-    // Condivisione Smartphone (WhatsApp, Telegram, Mail ecc.)
+    // Smartphone: condividi
     if (
       navigator.share &&
       navigator.canShare &&
@@ -741,23 +767,32 @@ function downloadPDF() {
 
     } else {
 
-      // Download PC
+      // PC fallback
       await worker.save();
-
     }
 
   } catch (err) {
 
     console.error(err);
 
-    // Fallback sicurezza
-    html2pdf()
-      .set(opt)
-      .from(element)
-      .save();
-
+    alert('Errore generazione PDF');
   }
 }
+  function clearCanvas(id) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+  
+function clearAllCanvases() {
+  Object.keys(canvasSettings).forEach(id => {
+    const canvas = document.getElementById(id);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+}
+
 
 </script>
 
