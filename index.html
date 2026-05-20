@@ -83,7 +83,7 @@
 
       <div class="field-inline">
         <label>Data Intervento</label>
-        <input type="text" id=data-intervento">
+        <input type="text" id="data-intervento">
       </div>
 
       <div class="field-inline">
@@ -583,14 +583,22 @@ function setupCanvases() {
 
 window.onload = function () {
 
-  // DATA AUTOMATICA
-const oggi = new Date();
-const giorno = String(oggi.getDate()).padStart(2, '0');
-const mese = String(oggi.getMonth() + 1).padStart(2, '0');
-const anno = oggi.getFullYear();
+  const oggi = new Date();
+  const giorno = String(oggi.getDate()).padStart(2, '0');
+  const mese = String(oggi.getMonth() + 1).padStart(2, '0');
+  const anno = oggi.getFullYear();
 
-  document.querySelector('input[type="text"]').value = `${giorno}/${mese}/${anno}`;
-  document.getElementById('data-intervento').value = formatDateToday();
+  const dataFormattata = `${giorno}/${mese}/${anno}`;
+
+  // SOLO campo giusto
+  const inputData = document.getElementById('data-intervento');
+  if (inputData) {
+    inputData.value = oggi.toISOString().split('T')[0];
+  }
+
+  setupCanvases();
+
+};
 
   // Service Worker
   if ('serviceWorker' in navigator) {
