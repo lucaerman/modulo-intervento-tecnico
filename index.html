@@ -4,52 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Modulo Rapporto Tecnico</title>
-  
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
+
   <meta name="theme-color" content="#1d1d1f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
   <link rel="apple-touch-icon" href="icon.png">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+
+    /* =========================================================
+       MIGLIORIE TABLET / TOUCH / ROTAZIONE
+    ========================================================= */
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    canvas {
+      touch-action: none;
+      display: block;
+      width: 100%;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+  </style>
 </head>
+
 <body>
 
 <div class="toolbar">
   <button onclick="downloadPDF()">Scarica PDF</button>
-  <button onclick="clearAllCanvases()" class="btn-clear">Cancella Disegni e Firme</button>
+  <button onclick="clearAllCanvases()" class="btn-clear">
+    Cancella Disegni e Firme
+  </button>
 </div>
 
 <div id="modulo" class="page">
 
   <div class="top-row">
+
     <div class="left-title">
       <h1>MODULO RAPPORTO TECNICO</h1>
-      <h2>PER IMPIANTO TERMICO CON POTENZA NOM. AL FOCOLARE &lt; 35 KW</h2>
+      <h2>
+        PER IMPIANTO TERMICO CON POTENZA NOM. AL FOCOLARE &lt; 35 KW
+      </h2>
     </div>
 
     <div class="ticket-box">
+
       <div class="field-inline">
         <label>N. Ticket</label>
         <input type="text">
       </div>
+
       <div class="field-inline">
         <label>Data Intervento</label>
         <input type="text" placeholder="    /    /    ">
       </div>
+
       <div class="field-inline">
         <label>Ora ingresso</label>
         <input type="time">
       </div>
+
       <div class="field-inline">
         <label>Ora uscita</label>
         <input type="time">
       </div>
+
     </div>
   </div>
 
   <div class="columns">
+
+    <!-- ===================================================== -->
+    <!-- COLONNA SINISTRA -->
+    <!-- ===================================================== -->
 
     <div class="left-column">
 
@@ -112,8 +153,11 @@
       </div>
 
       <div class="schema-container">
-        <div class="canvas-label">SCHEMATIZZARE INSTALLAZIONE (Disegna qui sotto)</div>
-        <canvas id="canvas-schema" width="350" height="180"></canvas>
+        <div class="canvas-label">
+          SCHEMATIZZARE INSTALLAZIONE (Disegna qui sotto)
+        </div>
+
+        <canvas id="canvas-schema"></canvas>
       </div>
 
       <div class="section-title">
@@ -131,16 +175,19 @@
       </div>
 
       <div class="checkbox-group">
+
         <div class="check-item">
           <span>CONTROLLO STUFA</span>
           <label>SI <input type="checkbox"></label>
           <label>NO <input type="checkbox"></label>
         </div>
+
         <div class="check-item">
           <span>CANNA FUMARIA</span>
           <label>SI <input type="checkbox"></label>
           <label>NO <input type="checkbox"></label>
         </div>
+
       </div>
 
       <div class="textarea-field">
@@ -163,46 +210,68 @@
       </div>
 
       <div class="firma-container">
-        <div class="canvas-label">FIRMA DEL TECNICO</div>
-        <canvas id="canvas-firma-tecnico" width="350" height="55"></canvas>
+
+        <div class="canvas-label">
+          FIRMA DEL TECNICO
+        </div>
+
+        <canvas id="canvas-firma-tecnico"></canvas>
+
       </div>
 
       <div class="firma-container">
-        <div class="canvas-label">FIRMA DEL RESPONSABILE IMPIANTO (PER PRESA VISIONE)</div>
-        <canvas id="canvas-firma-cliente" width="350" height="55"></canvas>
+
+        <div class="canvas-label">
+          FIRMA DEL RESPONSABILE IMPIANTO (PER PRESA VISIONE)
+        </div>
+
+        <canvas id="canvas-firma-cliente"></canvas>
+
       </div>
 
     </div>
 
+    <!-- ===================================================== -->
+    <!-- COLONNA DESTRA -->
+    <!-- ===================================================== -->
+
     <div class="right-column">
 
       <div class="section-title-table">
+
         <span>VERIFICA INSTALLAZIONE</span>
+
         <div class="table-headers">
           <span>SI</span>
           <span>NO</span>
         </div>
+
       </div>
 
       <table class="check-table">
+
         <tr class="table-subcat">
           <td colspan="3">A DOCUMENTAZIONE TECNICA</td>
         </tr>
+
         <tr>
           <td>Dichiarazione di Conformità dell'impianto ELETTRICO (Legge DM 37/08 del 2010)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Dichiarazione di Conformità dell'impianto FUMARIO (Legge DM 37/08 del 2010)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Dichiarazione di Conformità dell'impianto IDRAULICO (Legge DM 37/08 del 2010)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Libretto di impianto</td>
           <td><input type="checkbox"></td>
@@ -212,16 +281,19 @@
         <tr class="table-subcat">
           <td colspan="3">B LOCALE DI INSTALLAZIONE</td>
         </tr>
+
         <tr>
           <td>Idoneità del locale d'installazione (vedi norme nazionali)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Distanze di sicurezza rispettate attorno al generatore</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di adeguate e libere aperture di ventilazione</td>
           <td><input type="checkbox"></td>
@@ -231,74 +303,90 @@
         <tr class="table-subcat">
           <td colspan="3">C ESAME VISIVO IMPIANTO</td>
         </tr>
+
         <tr>
           <td>Canna fumaria in buono stato di conservazione e pulizia</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Canna fumaria di materiale e coibentazione adeguati</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Dimensioni canna fumaria (sezione ed altezza)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Tipologia dell'impianto di riscaldamento (termosifoni, a pavimento, ecc)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di saracinesche idrauliche prima della caldaia</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di vasi di espansione adeguati</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Pressione d'impianto idonea (circa 1,5 bar a caldo)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di accumulo inerziale di acqua tecnica (puffer)</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di valvole anti-condensa sull'impianto</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
         <tr>
           <td>Presenza di condizionatori chimici, disaeratori, defangatori</td>
           <td><input type="checkbox"></td>
           <td><input type="checkbox"></td>
         </tr>
+
       </table>
 
       <div class="legal-disclaimer">
+
         L'utente può mettere in funzione l'apparecchio a condizioni che ottemperi a quanto riportato nei punti A, B e C.<br>
-        Il tecnico declina ogni responsabilità per sinistro a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive. In presenza di carenze riscontrate e non eliminate, il responsabile dell'impianto si impegna, entro breve tempo, a provvedere alla loro risoluzione dandone notizia all'operatore incaricato. Nel caso di mancanza di Dichiarazione di Conformità dell'impianto, se all'atto delle prove di messa in servizio dell'apparechiatura non sono riscontrate prescrizioni che ne impediscano l'avviamento, è comunque indispensabile, per effetto della Legge 37/08, che l'Utente faccia controllare l'impianto da un installatore qualificato e si faccia rilasciare le relative Dichiarazione di Conformità mancanti.
+
+        Il tecnico declina ogni responsabilità per sinistro a persone, animali o cose derivanti da manomissione dell'impianto o dell'apparecchio da parte di terzi, ovvero da carenze di manutenzione successive.
+
       </div>
 
       <div class="notes-title">
         NOTE
       </div>
+
       <div class="notes-checks">
         <label><input type="checkbox"> OSSERVAZIONI</label>
         <label><input type="checkbox"> RACCOMANDAZIONI</label>
         <label><input type="checkbox"> PRESCRIZIONI</label>
       </div>
+
       <textarea class="big-notes"></textarea>
 
-      <div class="privacy-box">
+          <div class="privacy-box">
         <h3>INFORMATIVA AI SENSI DELLA DISCIPLINA SULLA TUTELA DEI DATI PERSONALI</h3>
         <p class="privacy-intro">Egregio Signore, Gent.ma Signora,</p>
         <p>
@@ -325,94 +413,230 @@
 
 </div>
 
-<script>
-function initCanvas(canvasId, targetHeight) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  let drawing = false;
+    <
 
-  // Assegna larghezza e altezza precise basate sul contenitore reale
-  canvas.width = canvas.parentElement.clientWidth - 2;
-  canvas.height = targetHeight;
+<script>
+
+/* =========================================================
+   GESTIONE CANVAS PROFESSIONALE
+========================================================= */
+
+const canvasSettings = {
+  'canvas-schema': 180,
+  'canvas-firma-tecnico': 55,
+  'canvas-firma-cliente': 55
+};
+
+function initCanvas(canvasId, targetHeight) {
+
+  const canvas = document.getElementById(canvasId);
+
+  if (!canvas) return;
+
+  const existingData = canvas.toDataURL();
+
+  const parentWidth = canvas.parentElement.clientWidth - 2;
+
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width = parentWidth * ratio;
+  canvas.height = targetHeight * ratio;
+
+  canvas.style.width = parentWidth + 'px';
+  canvas.style.height = targetHeight + 'px';
+
+  const ctx = canvas.getContext('2d');
+
+  ctx.scale(ratio, ratio);
 
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
   ctx.strokeStyle = '#000000';
 
-  canvas.addEventListener('mousedown', (e) => { drawing = true; draw(e, canvas, ctx); });
-  canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-  canvas.addEventListener('mousemove', (e) => { draw(e, canvas, ctx); });
+  let drawing = false;
 
-  canvas.addEventListener('touchstart', (e) => { drawing = true; drawTouch(e, canvas, ctx); e.preventDefault(); }, { passive: false });
-  canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); }, { passive: false });
-  canvas.addEventListener('touchmove', (e) => { drawTouch(e, canvas, ctx); e.preventDefault(); }, { passive: false });
+  function getPosition(e) {
+
+    const rect = canvas.getBoundingClientRect();
+
+    if (e.touches && e.touches.length > 0) {
+
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    }
+
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  function startDrawing(e) {
+
+    drawing = true;
+
+    const pos = getPosition(e);
+
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+  }
+
+  function draw(e) {
+
+    if (!drawing) return;
+
+    const pos = getPosition(e);
+
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
+
+  function stopDrawing() {
+
+    drawing = false;
+    ctx.beginPath();
+  }
+
+  // Rimuove vecchi eventi
+  canvas.onmousedown = null;
+  canvas.onmousemove = null;
+  canvas.onmouseup = null;
+
+  // Mouse
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  window.addEventListener('mouseup', stopDrawing);
+
+  // Touch
+  canvas.addEventListener('touchstart', (e) => {
+    startDrawing(e);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    draw(e);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', stopDrawing);
+
+  // Ripristina eventuale disegno precedente
+  if (existingData !== 'data:,') {
+
+    const img = new Image();
+
+    img.onload = function () {
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        parentWidth,
+        targetHeight
+      );
+    };
+
+    img.src = existingData;
+  }
 }
 
-function draw(e, canvas, ctx) {
-  if (!ctx.canvas.parentElement.offsetParent || !e.buttons && e.type === 'mousemove') return;
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+/* =========================================================
+   INIZIALIZZAZIONE
+========================================================= */
 
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
+function setupCanvases() {
+
+  Object.entries(canvasSettings).forEach(([id, height]) => {
+    initCanvas(id, height);
+  });
 }
 
-function drawTouch(e, canvas, ctx) {
-  if (e.touches.length === 0) return;
-  const rect = canvas.getBoundingClientRect();
-  const touch = e.touches[0];
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
+window.onload = function () {
 
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-}
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => {
+        console.log('Service Worker attivato con successo!');
+      })
+      .catch((err) => {
+        console.log('Errore Service Worker:', err);
+      });
+  }
+
+  setupCanvases();
+};
+
+/* =========================================================
+   ROTAZIONE TABLET / RESIZE
+========================================================= */
+
+let resizeTimer;
+
+window.addEventListener('resize', () => {
+
+  clearTimeout(resizeTimer);
+
+  resizeTimer = setTimeout(() => {
+    setupCanvases();
+  }, 300);
+});
+
+/* =========================================================
+   CANCELLA CANVAS
+========================================================= */
 
 function clearAllCanvases() {
-  ['canvas-schema', 'canvas-firma-tecnico', 'canvas-firma-cliente'].forEach(id => {
+
+  Object.keys(canvasSettings).forEach(id => {
+
     const canvas = document.getElementById(id);
+
     const ctx = canvas.getContext('2d');
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 }
 
-// ==========================================================================
-// REGISTRAZIONE SERVICE WORKER E INIZIALIZZAZIONE (MODIFICATO)
-// ==========================================================================
-window.onload = function() {
-  // Avvia il Service Worker per il funzionamento Offline
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('Service Worker attivato con successo!'))
-      .catch((err) => console.log('Errore Service Worker:', err));
-  }
-
-  // Inizializza le aree di disegno e firma
-  initCanvas('canvas-schema', 180);
-  initCanvas('canvas-firma-tecnico', 55);
-  initCanvas('canvas-firma-cliente', 55);
-};
+/* =========================================================
+   PDF
+========================================================= */
 
 function downloadPDF() {
+
   const element = document.getElementById('modulo');
-  
-  // Opzioni avanzate per garantire un output perfetto in formato A4
+
   const opt = {
     margin: 0,
     filename: 'rapporto-tecnico-firmato.pdf',
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+
+    image: {
+      type: 'jpeg',
+      quality: 1
+    },
+
+    html2canvas: {
+      scale: 2,
+      useCORS: true
+    },
+
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
   };
-  
-  // Genera ed esporta il PDF dell'elemento #modulo
-  html2pdf().set(opt).from(element).save();
+
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save();
 }
+
 </script>
 
 </body>
