@@ -583,6 +583,7 @@ function setupCanvases() {
 
 window.onload = function () {
 
+  // DATA CORRETTA DD/MM/YYYY
   const oggi = new Date();
   const giorno = String(oggi.getDate()).padStart(2, '0');
   const mese = String(oggi.getMonth() + 1).padStart(2, '0');
@@ -590,29 +591,19 @@ window.onload = function () {
 
   const dataFormattata = `${giorno}/${mese}/${anno}`;
 
-  // SOLO campo giusto
   const inputData = document.getElementById('data-intervento');
   if (inputData) {
-    inputData.value = oggi.toISOString().split('T')[0];
+    inputData.value = dataFormattata;
   }
 
   setupCanvases();
 
-};
-
-  // Service Worker
+  // Service Worker (GIUSTO DENTRO ONLOAD)
   if ('serviceWorker' in navigator) {
-
     navigator.serviceWorker.register('./sw.js')
-      .then(() => {
-        console.log('Service Worker attivato con successo!');
-      })
-      .catch((err) => {
-        console.log('Errore Service Worker:', err);
-      });
+      .then(() => console.log('Service Worker OK'))
+      .catch(err => console.log('SW errore:', err));
   }
-
-  setupCanvases();
 };
 
 /* =========================================================
