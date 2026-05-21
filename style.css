@@ -251,7 +251,7 @@ button:nth-child(5) {
 /* Firme compatte a fine foglio */
 .firma-container canvas {
   border: 1px dotted #000;
-  height: 55px;
+  height: 120px;
   cursor: crosshair;
   background: #fbfbfb;
   width: 100% !important;
