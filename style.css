@@ -454,21 +454,25 @@ button:nth-child(5) {
 }
 
 /* Adattamento Responsive Schermo Mobile Safari */
-@media (max-width: 220mm) {
+@media screen and (max-width: 900px) {
   body {
     padding: 5px;
   }
+
   .page {
     width: 100%;
     height: auto;
     min-height: auto;
     padding: 10px;
   }
+
   .columns {
     flex-direction: column;
     gap: 0;
   }
-  .left-column, .right-column {
+
+  .left-column,
+  .right-column {
     width: 100%;
   }
 }
