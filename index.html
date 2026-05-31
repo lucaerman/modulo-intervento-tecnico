@@ -464,6 +464,8 @@ function initCanvas(canvasId, targetHeight) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = '#000000';
+  ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
 
   let drawing = false;
 
@@ -544,25 +546,15 @@ function draw(e) {
   canvas.onmousemove = null;
   canvas.onmouseup = null;
 
-  // Mouse
-  canvas.addEventListener('mousedown', startDrawing);
-  canvas.addEventListener('mousemove', draw);
-  window.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('pointerdown', startDrawing);
+canvas.addEventListener('pointermove', draw);
+canvas.addEventListener('pointerup', stopDrawing);
+canvas.addEventListener('pointerleave', stopDrawing);
 
-  // Touch
-  canvas.addEventListener('touchstart', (e) => {
-    startDrawing(e);
-    e.preventDefault();
-  }, { passive: false });
+canvas.style.touchAction = 'none';
+canvas.style.userSelect = 'none';
 
-  canvas.addEventListener('touchmove', (e) => {
-    draw(e);
-    e.preventDefault();
-  }, { passive: false });
-
-  canvas.addEventListener('touchend', stopDrawing);
-
-  // Ripristina eventuale disegno precedente
+// Ripristina eventuale disegno precedente
   if (existingData !== 'data:,') {
 
     const img = new Image();
