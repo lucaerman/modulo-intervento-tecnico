@@ -242,7 +242,7 @@ button:nth-child(5) {
 /* Schema allargato a 180px come l'originale */
 .schema-container canvas {
   border: 1px dashed #777;
-  height: 180px; 
+  height: 200px; 
   cursor: crosshair;
   background: #fafafa;
   width: 100% !important;
@@ -251,7 +251,7 @@ button:nth-child(5) {
 /* Firme compatte a fine foglio */
 .firma-container canvas {
   border: 1px dotted #000;
-  height: 120px;
+  height: 160px;
   cursor: crosshair;
   background: #fbfbfb;
   width: 100% !important;
