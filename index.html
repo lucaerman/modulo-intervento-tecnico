@@ -713,6 +713,29 @@ function clearAllCanvases() {
   });
 }
 
+    // Carica automaticamente la firma preimpostata L E all'avvio della pagina
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('canvas-firma-tecnico');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    // Percorso del file che hai caricato su GitHub
+    img.src = 'firma-tecnico.png';
+    
+    img.onload = function() {
+      // Pulisce il canvas prima di disegnare per sicurezza
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Proporziona l'immagine per farla stare perfettamente nel riquadro della firma
+      const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+      const x = (canvas.width - img.width * ratio) / 2;
+      const y = (canvas.height - img.height * ratio) / 2;
+      
+      ctx.drawImage(img, x, y, img.width * ratio, img.height * ratio);
+    };
+  }
+});
 
 </script>
 
