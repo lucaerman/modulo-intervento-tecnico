@@ -653,56 +653,8 @@ function clearAllCanvases() {
 }
 
 /* =========================================================
-   PDF
+   UNICA FUNZIONE GENERAZIONE PDF CORRETTA (NON COPIARE DUE VOLTE)
 ========================================================= */
-function downloadPDF() {
-  const element = document.getElementById('modulo');
-
-  // PRENDE NOME CLIENTE
-  const nomeCliente = document.getElementById('cliente-nome').value.trim() || 'cliente';
-
-  // PRENDE DATA
-  const dataIntervento = document.getElementById('data-intervento').value.trim() || 'data';
-
-  // PULIZIA TESTO PER NOME FILE
-  const nomePulito = nomeCliente
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]/g, '');
-
-  const dataPulita = dataIntervento.replace(/\//g, '-');
-
-  // NOME FILE DINAMICO
-  const nomeFile = `rapporto-${nomePulito}-${dataPulita}.pdf`;
-
-  html2pdf()
-    .set({
-      margin: 0,
-      filename: nomeFile,
-      image: {
-        type: 'jpeg',
-        quality: 1
-      },
-      html2canvas: {
-        scale: 3,
-        useCORS: true,
-        windowWidth: 1200, // Simula lo schermo largo
-        width: 1200        // Forza la cattura dell'intera larghezza (Risolve il taglio a metà!)
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      }
-    })
-    .from(element)
-    .save();
-}
-
-/* =========================================================
-   PDF + CONDIVISIONE
-========================================================= */
-
-// UNICA FUNZIONE DOWNLOAD DEFINITIVA E CORRETTA PER L'OFFLINE
 async function downloadPDF() {
   try {
     const element = document.getElementById('modulo');
@@ -714,22 +666,25 @@ async function downloadPDF() {
     const nomeFile = `RT-${nomePulito}-${dataPulita}.pdf`;
 
     const opt = {
-      margin: 0,
+      margin: 4, // Margine di sicurezza per tablet e PC
       filename: nomeFile,
-      image: { type: 'jpeg', quality: 1 },
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 2, 
+        scale: 2,           // Qualità ottima senza pesare sulla memoria del tablet
         useCORS: true,
-        windowWidth: 1200 // Forza la larghezza corretta del layout nel PDF
+        logging: false,
+        letterRendering: true,
+        windowWidth: 1200,  // Simula uno schermo largo per affiancare le due colonne
+        width: 1200         // Inquadra l'intera larghezza risolvendo il taglio a metà!
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
     };
 
     const worker = html2pdf().set(opt).from(element);
     const pdfBlob = await worker.output('blob');
     const file = new File([pdfBlob], nomeFile, { type: 'application/pdf' });
 
-    // Se sei su smartphone e supporta la condivisione (WhatsApp, ecc.)
+    // Se supporta la condivisione diretta (WhatsApp/E-mail su Tablet o Telefono)
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
@@ -737,12 +692,12 @@ async function downloadPDF() {
         text: 'Invio rapporto tecnico'
       });
     } else {
-      // Fallback per PC o browser che non supportano la condivisione diretta
+      // Fallback per PC o browser senza condivisione nativa
       await worker.save();
     }
   } catch (err) {
     console.error(err);
-    alert('Errore generazione PDF');
+    alert('Errore durante la generazione del PDF');
   }
 }
   function clearCanvas(id) {
