@@ -1,14 +1,14 @@
-const CACHE_NAME = 'rapporto-tecnico-v28';
+const CACHE_NAME = 'rapporto-tecnico-v29';
 const ASSETS_TO_CACHE = [
   './',
-  './index.html', // Cambialo con il nome esatto del tuo file HTML se differente
+  './index.html',
   './style.css',
   './manifest.json',
   './icon.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'
+  './html2pdf.bundle.min.js' // Ora la libreria è locale!
 ];
 
-// Installazione e salvataggio dei file necessari in cache
+// Installazione e salvataggio dei file in cache locale
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Attivazione e rimozione di vecchie cache obsolete
+// Attivazione e pulizia vecchie cache
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -32,12 +32,15 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Strategia Network-First con Fallback su Cache (Usa la rete se disponibile, altrimenti la cache)
+// Strategia Cache-First: Ideale per asset locali offline stabili
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // Se la risposta è valida, aggiorna la cache in background
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse; // Se c'è in cache, usa questa all'istante
+      }
+
+      return fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -45,10 +48,10 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      })
-      .catch(() => {
-        // In assenza di rete, carica le risorse locali salvate
-        return caches.match(event.request);
-      })
+      }).catch(() => {
+        // Fallback estremo se manca sia rete che cache
+        return new Response('Risorsa non disponibile offline', { status: 503 });
+      });
+    })
   );
 });
