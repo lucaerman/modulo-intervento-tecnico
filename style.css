@@ -520,17 +520,23 @@ button:nth-child(5) {
 /* ==========================================================================
    FORZATURA PER GENERAZIONE PDF INTERO (RISOLVE IL LAYOUT A METÀ PAGINA)
    ========================================================================== */
+/* ==========================================================================
+   FORZATURA PER GENERAZIONE PDF INTERO (RISOLVE IL LAYOUT A METÀ PAGINA)
+   ========================================================================== */
 .page.pdf-mode {
-  width: 1200px !important;
-  max-width: 1200px !important;
-  height: 1650px !important; /* Calibrato per l'altezza del modulo a 1200px di larghezza */
-  padding: 30px !important;
+  width: 210mm !important;
+  max-width: 210mm !important;
+  height: 297mm !important;
+  padding: 8mm 8mm !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
 
 .page.pdf-mode .columns {
   display: flex !important;
-  flex-direction: row !important; /* Forza le due colonne ad affiancarsi nel PDF */
-  gap: 25px !important;
+  flex-direction: row !important; /* Forza le due colonne a stare affiancate nel PDF */
+  gap: 12px !important;
 }
 
 .page.pdf-mode .left-column {
@@ -540,4 +546,3 @@ button:nth-child(5) {
 .page.pdf-mode .right-column {
   width: 52% !important;
 }
-
