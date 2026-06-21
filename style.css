@@ -520,9 +520,6 @@ button:nth-child(5) {
 /* ==========================================================================
    FORZATURA PER GENERAZIONE PDF INTERO (RISOLVE IL LAYOUT A METÀ PAGINA)
    ========================================================================== */
-/* ==========================================================================
-   FORZATURA PER GENERAZIONE PDF INTERO (RISOLVE IL LAYOUT A METÀ PAGINA)
-   ========================================================================== */
 .page.pdf-mode {
   width: 210mm !important;
   max-width: 210mm !important;
@@ -535,7 +532,7 @@ button:nth-child(5) {
 
 .page.pdf-mode .columns {
   display: flex !important;
-  flex-direction: row !important; /* Forza le due colonne a stare affiancate nel PDF */
+  flex-direction: row !important; /* Forza le due colonne ad affiancarsi nel PDF */
   gap: 12px !important;
 }
 
