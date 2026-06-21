@@ -528,6 +528,7 @@ button:nth-child(5) {
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
+  page-break-after: avoid !important;
 }
 
 .page.pdf-mode .columns {
