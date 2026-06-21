@@ -14,7 +14,7 @@
 
   <link rel="apple-touch-icon" href="icon.png">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="html2pdf.bundle.min.js"></script>
 
   <style>
 
@@ -711,94 +711,46 @@ function downloadPDF() {
    PDF + CONDIVISIONE
 ========================================================= */
 
+// UNICA FUNZIONE DOWNLOAD DEFINITIVA E CORRETTA PER L'OFFLINE
 async function downloadPDF() {
-
   try {
-
     const element = document.getElementById('modulo');
+    const nomeCliente = document.getElementById('cliente-nome').value.trim() || 'cliente';
+    const dataIntervento = document.getElementById('data-intervento').value.trim() || 'data';
 
-    // Nome cliente
-    const nomeCliente =
-      document.getElementById('cliente-nome').value.trim() || 'cliente';
+    const nomePulito = nomeCliente.replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
+    const dataPulita = dataIntervento.replace(/\//g, '-');
+    const nomeFile = `RT-${nomePulito}-${dataPulita}.pdf`;
 
-    // Data
-    const dataIntervento =
-      document.getElementById('data-intervento').value.trim() || 'data';
-
-    // Pulizia nome
-    const nomePulito = nomeCliente
-      .replace(/\s+/g, '-')
-      .replace(/[^\w\-]/g, '');
-
-    const dataPulita =
-      dataIntervento.replace(/\//g, '-');
-
-    // Nome PDF finale
-    const nomeFile =
-      `RT-${nomePulito}-${dataPulita}.pdf`;
-
-    // Opzioni PDF
     const opt = {
-
       margin: 0,
-
       filename: nomeFile,
-
-      image: {
-        type: 'jpeg',
-        quality: 1
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true,
+        windowWidth: 1200 // Forza la larghezza corretta del layout nel PDF
       },
-
-      html2canvas: {
-        scale: 2,
-        useCORS: true
-      },
-
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Genera PDF
-    const worker =
-      html2pdf().set(opt).from(element);
+    const worker = html2pdf().set(opt).from(element);
+    const pdfBlob = await worker.output('blob');
+    const file = new File([pdfBlob], nomeFile, { type: 'application/pdf' });
 
-    // Blob PDF
-    const pdfBlob =
-      await worker.output('blob');
-
-    // File finale
-    const file = new File(
-      [pdfBlob],
-      nomeFile,
-      { type: 'application/pdf' }
-    );
-
-    // Smartphone: condividi
-    if (
-      navigator.share &&
-      navigator.canShare &&
-      navigator.canShare({ files: [file] })
-    ) {
-
+    // Se sei su smartphone e supporta la condivisione (WhatsApp, ecc.)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
         title: 'Rapporto Tecnico',
         text: 'Invio rapporto tecnico'
       });
-
     } else {
-
-      // PC fallback
+      // Fallback per PC o browser che non supportano la condivisione diretta
       await worker.save();
     }
-
   } catch (err) {
-
     console.error(err);
-
     alert('Errore generazione PDF');
   }
 }
