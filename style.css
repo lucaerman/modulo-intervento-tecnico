@@ -517,3 +517,27 @@ button:nth-child(5) {
   z-index: 1;
 }
 
+/* ==========================================================================
+   FORZATURA PER GENERAZIONE PDF INTERO (RISOLVE IL LAYOUT A METÀ PAGINA)
+   ========================================================================== */
+.page.pdf-mode {
+  width: 1200px !important;
+  max-width: 1200px !important;
+  height: 1650px !important; /* Calibrato per l'altezza del modulo a 1200px di larghezza */
+  padding: 30px !important;
+}
+
+.page.pdf-mode .columns {
+  display: flex !important;
+  flex-direction: row !important; /* Forza le due colonne ad affiancarsi nel PDF */
+  gap: 25px !important;
+}
+
+.page.pdf-mode .left-column {
+  width: 48% !important;
+}
+
+.page.pdf-mode .right-column {
+  width: 52% !important;
+}
+
