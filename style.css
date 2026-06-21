@@ -543,3 +543,8 @@ button:nth-child(5) {
 .page.pdf-mode .right-column {
   width: 52% !important;
 }
+
+/* Blocca la scrittura manuale sul canvas del tecnico per proteggere la firma preimpostata */
+#canvas-firma-tecnico {
+  pointer-events: none !important;
+}
