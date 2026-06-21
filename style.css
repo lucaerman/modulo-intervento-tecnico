@@ -254,7 +254,6 @@ button:nth-child(5) {
   height: 160px;
   cursor: crosshair;
   background: #fbfbfb;
-  width: 100% !important;
 }
 
 /* ==========================================================================
@@ -532,6 +531,10 @@ button:nth-child(5) {
   overflow: hidden !important;   /* TRUCCAZZO: Taglia i margini in eccesso e impedisce la pagina 2! */
   page-break-after: avoid !important;
   page-break-inside: avoid !important;
+}
+
+.page.pdf-mode .firma-container canvas {
+  width: 100% !important;
 }
 
 .page.pdf-mode .columns {
