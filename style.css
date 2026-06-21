@@ -524,12 +524,14 @@ button:nth-child(5) {
   width: 210mm !important;
   max-width: 210mm !important;
   height: 297mm !important;
-  max-height: 297mm !important; /* Forza il blocco rigido verticale */
-  padding: 6mm 8mm !important;   /* Ridotto leggermente il margine superiore/inferiore */
+  max-height: 297mm !important; /* BLOCCO RIGIDO: Impone l'altezza esatta di un A4 */
+  padding: 6mm 8mm !important;   /* Compatta leggermente il margine verticale */
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
-  overflow: hidden !important;   /* Impedisce fisicamente la creazione della pagina 2 */
+  overflow: hidden !important;   /* TRUCCAZZO: Taglia i margini in eccesso e impedisce la pagina 2! */
+  page-break-after: avoid !important;
+  page-break-inside: avoid !important;
 }
 
 .page.pdf-mode .columns {
@@ -544,15 +546,6 @@ button:nth-child(5) {
 
 .page.pdf-mode .right-column {
   width: 52% !important;
-}
-
-/* RIDUZIONE CHIRURGICA DELLE FIRME SOLO NEL PDF */
-.page.pdf-mode .firma-container canvas {
-  height: 90px !important; /* Rimpicciolisce l'altezza da 160px a 90px nel PDF */
-}
-
-.page.pdf-mode .firma-container {
-  margin: 1px 0 !important; /* Riduce al minimo lo spazio vuoto intorno alle firme */
 }
 
 /* Blocca la scrittura manuale sul canvas del tecnico per proteggere la firma preimpostata */
