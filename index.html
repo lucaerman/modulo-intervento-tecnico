@@ -658,6 +658,10 @@ function clearAllCanvases() {
 async function downloadPDF() {
   try {
     const element = document.getElementById('modulo');
+
+    // Attiva la classe CSS speciale che hai appena aggiunto
+    element.classList.add('pdf-mode');
+
     const nomeCliente = document.getElementById('cliente-nome').value.trim() || 'cliente';
     const dataIntervento = document.getElementById('data-intervento').value.trim() || 'data';
 
@@ -666,25 +670,28 @@ async function downloadPDF() {
     const nomeFile = `RT-${nomePulito}-${dataPulita}.pdf`;
 
     const opt = {
-      margin: 4, // Margine di sicurezza per tablet e PC
+      margin: 0,
       filename: nomeFile,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 2,           // Qualità ottima senza pesare sulla memoria del tablet
+        scale: 2,           
         useCORS: true,
         logging: false,
         letterRendering: true,
-        windowWidth: 1200,  // Simula uno schermo largo per affiancare le due colonne
-        width: 1200         // Inquadra l'intera larghezza risolvendo il taglio a metà!
+        windowWidth: 1200,  // FONDAMENTALE: Simula lo schermo largo nel PDF
+        width: 1200         // FONDAMENTALE: Inquadra tutti i 1200px del nuovo CSS!
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
     };
 
     const worker = html2pdf().set(opt).from(element);
     const pdfBlob = await worker.output('blob');
+    
+    // Rimuove la classe per far tornare lo schermo del tablet normale
+    element.classList.remove('pdf-mode');
+
     const file = new File([pdfBlob], nomeFile, { type: 'application/pdf' });
 
-    // Se supporta la condivisione diretta (WhatsApp/E-mail su Tablet o Telefono)
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
@@ -692,12 +699,13 @@ async function downloadPDF() {
         text: 'Invio rapporto tecnico'
       });
     } else {
-      // Fallback per PC o browser senza condivisione nativa
       await worker.save();
     }
+
   } catch (err) {
     console.error(err);
-    alert('Errore durante la generazione del PDF');
+    alert('Errore generazione PDF');
+    document.getElementById('modulo').classList.remove('pdf-mode');
   }
 }
   function clearCanvas(id) {
