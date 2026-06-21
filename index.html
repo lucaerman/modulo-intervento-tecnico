@@ -656,16 +656,13 @@ function clearAllCanvases() {
    PDF
 ========================================================= */
 function downloadPDF() {
-
   const element = document.getElementById('modulo');
 
   // PRENDE NOME CLIENTE
-  const nomeCliente =
-    document.getElementById('cliente-nome').value.trim() || 'cliente';
+  const nomeCliente = document.getElementById('cliente-nome').value.trim() || 'cliente';
 
   // PRENDE DATA
-  const dataIntervento =
-    document.getElementById('data-intervento').value.trim() || 'data';
+  const dataIntervento = document.getElementById('data-intervento').value.trim() || 'data';
 
   // PULIZIA TESTO PER NOME FILE
   const nomePulito = nomeCliente
@@ -675,28 +672,22 @@ function downloadPDF() {
   const dataPulita = dataIntervento.replace(/\//g, '-');
 
   // NOME FILE DINAMICO
-  const nomeFile =
-    `rapporto-${nomePulito}-${dataPulita}.pdf`;
+  const nomeFile = `rapporto-${nomePulito}-${dataPulita}.pdf`;
 
   html2pdf()
     .set({
       margin: 0,
       filename: nomeFile,
-
       image: {
         type: 'jpeg',
         quality: 1
       },
-
-  html2canvas: {
-  scale: 3,
-  useCORS: true,
-  windowWidth: 1200,
-  windowHeight: 1700,
-  scrollX: 0,
-  scrollY: 0
-},
-
+      html2canvas: {
+        scale: 3,
+        useCORS: true,
+        windowWidth: 1200, // Simula lo schermo largo
+        width: 1200        // Forza la cattura dell'intera larghezza (Risolve il taglio a metà!)
+      },
       jsPDF: {
         unit: 'mm',
         format: 'a4',
