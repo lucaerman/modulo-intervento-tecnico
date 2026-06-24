@@ -1,11 +1,11 @@
-const CACHE_NAME = 'rapporto-tecnico-v43';
+const CACHE_NAME = 'rapporto-tecnico-v44';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
   './manifest.json',
   './icon.png',
-  './html2pdf.bundle.min.js' // Ora la libreria è locale!
+  './html2pdf.bundle.min.js', // Ora la libreria è locale!
   './firma-tecnico.png'
 ];
 
