@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rapporto-tecnico-v44';
+const CACHE_NAME = 'rapporto-tecnico-v45';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const ASSETS_TO_CACHE = [
   './manifest.json',
   './icon.png',
   './html2pdf.bundle.min.js', // Ora la libreria è locale!
-  './firma-tecnico.png'
+  './firma-tecnico.png',
+  './logo.png'
 ];
 
 // Installazione e salvataggio dei file in cache locale
