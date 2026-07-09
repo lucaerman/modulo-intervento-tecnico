@@ -600,47 +600,48 @@ window.onload = function () {
 
   setupCanvases();
 
-    // Service Worker (GIUSTO DENTRO ONLOAD)
-  if ('serviceWorker' in navigator) {
-    let newWorker;
+  // Service Worker (GIUSTO DENTRO ONLOAD)
+if ('serviceWorker' in navigator) {
+  let newWorker;
 
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('Service Worker OK');
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => {
+      console.log('Service Worker OK');
 
-        // 1. Controlla se c'è già un nuovo SW in attesa (es. l'utente ha aperto l'app due volte)
-        if (reg.waiting) {
-          newWorker = reg.waiting;
-          mostraNotificaAggiornamento(newWorker);
-        }
-
-        // 2. Ascolta se viene trovato un nuovo Service Worker mentre l'app è aperta
-        reg.addEventListener('updatefound', () => {
-          newWorker = reg.installing;
-          
-          newWorker.addEventListener('statechange', () => {
-            // Quando il nuovo SW ha finito di installarsi ed è pronto a subentrare
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              mostraNotificaAggiornamento(newWorker);
-            }
-          });
-        });
-      })
-      .catch(err => console.log('SW errore:', err));
-
-    // 3. Ricarica la pagina automaticamente non appena il nuovo SW prende il controllo
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        window.location.reload();
-        refreshing = true;
+      // 1. Controlla se c'è già un nuovo SW in attesa
+      if (reg.waiting) {
+        newWorker = reg.waiting;
+        mostraNotificaAggiornamento(newWorker);
       }
-    });
-  }
+
+      // 2. Ascolta se viene trovato un nuovo Service Worker mentre l'app è aperta
+      reg.addEventListener('updatefound', () => {
+        newWorker = reg.installing;
+        
+        newWorker.addEventListener('statechange', () => {
+          // Quando il nuovo SW ha finito di installarsi ed è pronto a subentrare
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            mostraNotificaAggiornamento(newWorker);
+          }
+        });
+      });
+    })
+    .catch(err => console.log('SW errore:', err));
+
+  // 3. Ricarica la pagina automaticamente non appena il nuovo SW prende il controllo
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      window.location.reload();
+      refreshing = true;
+    }
+  });
+}
 }; // Chiusura del tuo window.onload
 
-    function mostraNotificaAggiornamento(worker) {
-  // Crea un banner elegante in fondo alla pagina
+// Funzione esterna corretta con BANNER GRAFICO per evitare blocchi su iOS/Tablet
+function mostraNotificaAggiornamento(worker) {
+  // Evitiamo il confirm() nativo e creiamo un elemento HTML dinamico
   const banner = document.createElement('div');
   banner.innerHTML = `
     <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
@@ -657,21 +658,12 @@ window.onload = function () {
   
   document.body.appendChild(banner);
 
-  // Quando l'utente clicca sul pulsante "Aggiorna" nel banner
+  // Al clic sul pulsante, invia il messaggio al service worker
   document.getElementById('btn-aggiorna').addEventListener('click', () => {
     worker.postMessage({ action: 'skipWaiting' });
   });
 }
 
-
-// Funzione esterna (o interna) per gestire l'avviso all'utente
-function mostraNotificaAggiornamento(worker) {
-  const conferma = confirm("È disponibile un nuovo aggiornamento dell'app! Vuoi installarlo adesso?");
-  if (conferma) {
-    // Dice al Service Worker in attesa di attivarsi immediatamente
-    worker.postMessage({ action: 'skipWaiting' });
-  }
-}
 
 
 /* =========================================================
