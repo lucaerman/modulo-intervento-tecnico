@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rapporto-tecnico-v45';
+const CACHE_NAME = 'rapporto-tecnico-v46';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -15,7 +15,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    }) // RIMOSSO il skipWaiting automatico da qui per permettere la notifica
   );
 });
 
@@ -56,4 +56,15 @@ self.addEventListener('fetch', (event) => {
       });
     })
   );
+});
+
+---
+
+### 🌟 AGGIUNTA PER GESTIRE LA NOTIFICA DI AGGIORNAMENTO 🌟
+
+// Ascolta il messaggio "skipWaiting" inviato dal pulsante/conferma dell'app
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
