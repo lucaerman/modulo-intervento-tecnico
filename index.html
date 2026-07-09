@@ -639,6 +639,31 @@ window.onload = function () {
   }
 }; // Chiusura del tuo window.onload
 
+    function mostraNotificaAggiornamento(worker) {
+  // Crea un banner elegante in fondo alla pagina
+  const banner = document.createElement('div');
+  banner.innerHTML = `
+    <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+                background: #333; color: #fff; padding: 15px 20px; border-radius: 8px; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9999; display: flex; 
+                align-items: center; gap: 15px; font-family: sans-serif; width: 90%; max-width: 400px;">
+      <span style="flex-grow: 1; font-size: 14px;">Nuovo aggiornamento disponibile!</span>
+      <button id="btn-aggiorna" style="background: #28a745; color: white; border: none; 
+               padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        Aggiorna
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(banner);
+
+  // Quando l'utente clicca sul pulsante "Aggiorna" nel banner
+  document.getElementById('btn-aggiorna').addEventListener('click', () => {
+    worker.postMessage({ action: 'skipWaiting' });
+  });
+}
+
+
 // Funzione esterna (o interna) per gestire l'avviso all'utente
 function mostraNotificaAggiornamento(worker) {
   const conferma = confirm("È disponibile un nuovo aggiornamento dell'app! Vuoi installarlo adesso?");
