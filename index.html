@@ -22,7 +22,7 @@
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.8s ease;
 }
 
     /* =========================================================
@@ -579,11 +579,11 @@ window.onload = function () {
   setupCanvases();
 
   // Nascondi schermata di caricamento
-  setTimeout(nascondiLoader, 300);
+  setTimeout(nascondiLoader, 3000);
 };
 
 // Paracadute di sicurezza: rimuove sempre il loader entro 1.5s
-setTimeout(nascondiLoader, 1500);
+setTimeout(nascondiLoader, 4500);
 
  /* =========================================================
        SERVICE WORKER (Fuori da window.onload)
