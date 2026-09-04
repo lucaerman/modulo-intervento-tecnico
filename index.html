@@ -535,8 +535,9 @@ function loadFirmaTecnico() {
   };
 }
 
+
 /* =========================================================
-   INIZIALIZZAZIONE
+   INIZIALIZZAZIONE & LOADER
 ========================================================= */
 
 function setupCanvases() {
@@ -545,29 +546,38 @@ function setupCanvases() {
   });
   loadFirmaTecnico();
 }
-    window.onload = function () {
-      const oggi = new Date();
-      const giorno = String(oggi.getDate()).padStart(2, '0');
-      const mese = String(oggi.getMonth() + 1).padStart(2, '0');
-      const anno = oggi.getFullYear();
 
-      const dataFormattata = `${giorno}/${mese}/${anno}`;
+// FUNZIONE MANCANTE AGGIUNTA QUI:
+function nascondiLoader() {
+  const loader = document.getElementById('loader-screen');
+  if (loader) {
+    loader.classList.add('hidden');
+  }
+}
 
-      const inputData = document.getElementById('data-intervento');
-      if (inputData) {
-        inputData.value = dataFormattata;
-      }
+window.onload = function () {
+  const oggi = new Date();
+  const giorno = String(oggi.getDate()).padStart(2, '0');
+  const mese = String(oggi.getMonth() + 1).padStart(2, '0');
+  const anno = oggi.getFullYear();
 
-      setupCanvases();
+  const dataFormattata = `${giorno}/${mese}/${anno}`;
 
-      // Nascondi schermata di caricamento
-      setTimeout(nascondiLoader, 300);
-    }; // <-- QUESTA CHIUSURA ERA MANCANTE O POSIZIONATA ERRONEAMENTE
+  const inputData = document.getElementById('data-intervento');
+  if (inputData) {
+    inputData.value = dataFormattata;
+  }
 
-    // Paracadute di sicurezza: rimuove sempre il loader entro 1.5s
-    setTimeout(nascondiLoader, 1500);
+  setupCanvases();
 
-    /* =========================================================
+  // Nascondi schermata di caricamento
+  setTimeout(nascondiLoader, 300);
+};
+
+// Paracadute di sicurezza: rimuove sempre il loader entro 1.5s
+setTimeout(nascondiLoader, 1500);
+
+ /* =========================================================
        SERVICE WORKER (Fuori da window.onload)
     ========================================================= */
 
