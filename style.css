@@ -519,19 +519,21 @@ button:nth-child(5) {
 /* ==========================================================================
    FORZATURA PER GENERAZIONE PDF INTERO CON FIRMA AUTOMATICA
    ========================================================================== */
+/* Correzione per la modalità PDF */
 .page.pdf-mode {
   width: 210mm !important;
   max-width: 210mm !important;
-  height: 297mm !important;
-  max-height: 297mm !important; /* BLOCCO RIGIDO: Impone l'altezza esatta di un A4 */
-  padding: 6mm 8mm !important;   /* Compatta leggermente il margine verticale */
+  height: 296mm !important; /* Ridotto di 1mm per prevenire la seconda pagina bianca */
+  max-height: 296mm !important;
+  padding: 6mm 8mm !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
-  overflow: hidden !important;   /* TRUCCAZZO: Taglia i margini in eccesso e impedisce la pagina 2! */
+  overflow: hidden !important;
   page-break-after: avoid !important;
   page-break-inside: avoid !important;
 }
+
 
 .page.pdf-mode .firma-container canvas {
   width: 100% !important;
@@ -565,19 +567,21 @@ button:nth-child(5) {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #1d1d1f; /* Colore scuro coordinato al theme-color */
+  background-color: #1d1d1f;
   color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 99999;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease; /* Fluidità a 0.5s */
 }
 
 #loader-screen.hidden {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Impedisce interazioni trasparenti */
 }
+
 
 .loader-content {
   text-align: center;
