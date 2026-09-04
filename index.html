@@ -413,8 +413,7 @@
 
 </div>
 
-  <script>
-
+    <script>
 /* =========================================================
    GESTIONE CANVAS PROFESSIONALE
 ========================================================= */
@@ -426,48 +425,39 @@ const canvasSettings = {
 };
 
 function initCanvas(canvasId, targetHeight) {
-
   const canvas = document.getElementById(canvasId);
-
   if (!canvas) return;
 
   const existingData = canvas.toDataURL();
-
   const parentWidth = canvas.parentElement.clientWidth - 2;
-
   const ratio = window.devicePixelRatio || 1;
 
   canvas.width = parentWidth * ratio;
   canvas.height = targetHeight * ratio;
-
   canvas.style.width = parentWidth + 'px';
   canvas.style.height = targetHeight + 'px';
 
   const ctx = canvas.getContext('2d');
-
   ctx.scale(ratio, ratio);
-
   ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = '#000000';
   ctx.imageSmoothingEnabled = true;
-ctx.imageSmoothingQuality = 'high';
+  ctx.imageSmoothingQuality = 'high';
 
   let drawing = false;
+  let lastX = 0;
+  let lastY = 0;
 
   function getPosition(e) {
-
     const rect = canvas.getBoundingClientRect();
-
     if (e.touches && e.touches.length > 0) {
-
       return {
         x: e.touches[0].clientX - rect.left,
         y: e.touches[0].clientY - rect.top
       };
     }
-
     return {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
@@ -475,90 +465,66 @@ ctx.imageSmoothingQuality = 'high';
   }
 
   function startDrawing(e) {
-
     drawing = true;
-
     const pos = getPosition(e);
-
+    lastX = pos.x;
+    lastY = pos.y;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
   }
 
-let lastX = 0;
-let lastY = 0;
+  function draw(e) {
+    if (!drawing) return;
+    const pos = getPosition(e);
+    const midX = (lastX + pos.x) / 2;
+    const midY = (lastY + pos.y) / 2;
 
-function startDrawing(e) {
+    ctx.quadraticCurveTo(lastX, lastY, midX, midY);
+    ctx.stroke();
 
-  drawing = true;
-
-  const pos = getPosition(e);
-
-  lastX = pos.x;
-  lastY = pos.y;
-
-  ctx.beginPath();
-  ctx.moveTo(pos.x, pos.y);
-}
-
-function draw(e) {
-
-  if (!drawing) return;
-
-  const pos = getPosition(e);
-
-  const midX = (lastX + pos.x) / 2;
-  const midY = (lastY + pos.y) / 2;
-
-  ctx.quadraticCurveTo(
-    lastX,
-    lastY,
-    midX,
-    midY
-  );
-
-  ctx.stroke();
-
-  lastX = pos.x;
-  lastY = pos.y;
-}
+    lastX = pos.x;
+    lastY = pos.y;
+  }
 
   function stopDrawing() {
-
     drawing = false;
     ctx.beginPath();
   }
 
-  // Rimuove vecchi eventi
-  canvas.onmousedown = null;
-  canvas.onmousemove = null;
-  canvas.onmouseup = null;
-
   canvas.addEventListener('pointerdown', startDrawing);
-canvas.addEventListener('pointermove', draw);
-canvas.addEventListener('pointerup', stopDrawing);
-canvas.addEventListener('pointerleave', stopDrawing);
+  canvas.addEventListener('pointermove', draw);
+  canvas.addEventListener('pointerup', stopDrawing);
+  canvas.addEventListener('pointerleave', stopDrawing);
 
-canvas.style.touchAction = 'none';
-canvas.style.userSelect = 'none';
+  canvas.style.touchAction = 'none';
+  canvas.style.userSelect = 'none';
 
-// Ripristina eventuale disegno precedente
-  if (existingData !== 'data:,') {
-
+  if (existingData !== 'data:,' && !existingData.includes('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==')) {
     const img = new Image();
-
     img.onload = function () {
-
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        parentWidth,
-        targetHeight
-      );
+      ctx.drawImage(img, 0, 0, parentWidth, targetHeight);
     };
-
     img.src = existingData;
   }
+}
+
+function loadFirmaTecnico() {
+  const canvas = document.getElementById('canvas-firma-tecnico');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.src = 'firma-tecnico.png';
+
+  img.onload = function() {
+    const rectWidth = canvas.clientWidth;
+    const rectHeight = canvas.clientHeight;
+    const ratio = Math.min(rectWidth / img.width, rectHeight / img.height);
+    const x = (rectWidth - img.width * ratio) / 2;
+    const y = (rectHeight - img.height * ratio) / 2;
+
+    ctx.drawImage(img, x, y, img.width * ratio, img.height * ratio);
+  };
 }
 
 /* =========================================================
@@ -567,25 +533,12 @@ canvas.style.userSelect = 'none';
 
 function setupCanvases() {
   Object.entries(canvasSettings).forEach(([id, height]) => {
-    const canvas = document.getElementById(id);
-    if (!canvas) return;
-
-    const data = canvas.toDataURL(); // salva disegno
-
     initCanvas(id, height);
-
-    const img = new Image();
-    img.onload = () => {
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-    };
-    img.src = data;
   });
+  loadFirmaTecnico();
 }
 
 window.onload = function () {
-
-  // DATA CORRETTA DD/MM/YYYY
   const oggi = new Date();
   const giorno = String(oggi.getDate()).padStart(2, '0');
   const mese = String(oggi.getMonth() + 1).padStart(2, '0');
@@ -600,48 +553,41 @@ window.onload = function () {
 
   setupCanvases();
 
-  // Service Worker (GIUSTO DENTRO ONLOAD)
-if ('serviceWorker' in navigator) {
-  let newWorker;
+  if ('serviceWorker' in navigator) {
+    let newWorker;
 
-  navigator.serviceWorker.register('./sw.js')
-    .then(reg => {
-      console.log('Service Worker OK');
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('Service Worker OK');
 
-      // 1. Controlla se c'è già un nuovo SW in attesa
-      if (reg.waiting) {
-        newWorker = reg.waiting;
-        mostraNotificaAggiornamento(newWorker);
-      }
+        if (reg.waiting) {
+          newWorker = reg.waiting;
+          mostraNotificaAggiornamento(newWorker);
+        }
 
-      // 2. Ascolta se viene trovato un nuovo Service Worker mentre l'app è aperta
-      reg.addEventListener('updatefound', () => {
-        newWorker = reg.installing;
-        
-        newWorker.addEventListener('statechange', () => {
-          // Quando il nuovo SW ha finito di installarsi ed è pronto a subentrare
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            mostraNotificaAggiornamento(newWorker);
-          }
+        reg.addEventListener('updatefound', () => {
+          newWorker = reg.installing;
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              mostraNotificaAggiornamento(newWorker);
+            }
+          });
         });
-      });
-    })
-    .catch(err => console.log('SW errore:', err));
+      })
+      .catch(err => console.log('SW errore:', err));
 
-  // 3. Ricarica la pagina automaticamente non appena il nuovo SW prende il controllo
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) {
-      window.location.reload();
-      refreshing = true;
-    }
-  });
-}
-}; // Chiusura del tuo window.onload
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload();
+        refreshing = true;
+      }
+    });
+  }
+};
 
-// Funzione esterna corretta con BANNER GRAFICO per evitare blocchi su iOS/Tablet
 function mostraNotificaAggiornamento(worker) {
-  // Evitiamo il confirm() nativo e creiamo un elemento HTML dinamico
   const banner = document.createElement('div');
   banner.innerHTML = `
     <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
@@ -658,13 +604,10 @@ function mostraNotificaAggiornamento(worker) {
   
   document.body.appendChild(banner);
 
-  // Al clic sul pulsante, invia il messaggio al service worker
   document.getElementById('btn-aggiorna').addEventListener('click', () => {
     worker.postMessage({ action: 'skipWaiting' });
   });
 }
-
-
 
 /* =========================================================
    ROTAZIONE TABLET / RESIZE
@@ -673,9 +616,7 @@ function mostraNotificaAggiornamento(worker) {
 let resizeTimer;
 
 window.addEventListener('resize', () => {
-
   clearTimeout(resizeTimer);
-
   resizeTimer = setTimeout(() => {
     setupCanvases();
   }, 300);
@@ -685,26 +626,30 @@ window.addEventListener('resize', () => {
    CANCELLA CANVAS
 ========================================================= */
 
+function clearCanvas(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  if (id === 'canvas-firma-tecnico') {
+    loadFirmaTecnico();
+  }
+}
+
 function clearAllCanvases() {
-
   Object.keys(canvasSettings).forEach(id => {
-
-    const canvas = document.getElementById(id);
-
-    const ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas(id);
   });
 }
 
 /* =========================================================
-   UNICA FUNZIONE GENERAZIONE PDF CORRETTA (NON COPIARE DUE VOLTE)
+   GENERAZIONE PDF
 ========================================================= */
+
 async function downloadPDF() {
   try {
     const element = document.getElementById('modulo');
-
-    // Attiva la modalità PDF prima dello scatto
     element.classList.add('pdf-mode');
 
     const nomeCliente = document.getElementById('cliente-nome').value.trim() || 'cliente';
@@ -719,21 +664,18 @@ async function downloadPDF() {
       filename: nomeFile,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 2, // Ottima qualità per scritte e firme senza appesantire la memoria
+        scale: 2,
         useCORS: true,
         logging: false,
         letterRendering: true
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      // BLOCCO DEL SECONDO FOGLIO: Dice alla libreria di ignorare i salti di pagina automatici
       pagebreak: { mode: 'avoid' }
     };
 
-    // Genera il file PDF dal modulo
     const worker = html2pdf().set(opt).from(element);
     const pdfBlob = await worker.output('blob');
     
-    // Rimuove immediatamente la classe per far tornare lo schermo normale sul tablet
     element.classList.remove('pdf-mode');
 
     const file = new File([pdfBlob], nomeFile, { type: 'application/pdf' });
@@ -754,46 +696,8 @@ async function downloadPDF() {
     document.getElementById('modulo').classList.remove('pdf-mode');
   }
 }
-  function clearCanvas(id) {
-  const canvas = document.getElementById(id);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-  
-function clearAllCanvases() {
-  Object.keys(canvasSettings).forEach(id => {
-    const canvas = document.getElementById(id);
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  });
-}
-
-    // Carica automaticamente la firma preimpostata L E all'avvio della pagina
-window.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('canvas-firma-tecnico');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    
-    // Percorso del file che hai caricato su GitHub
-    img.src = 'firma-tecnico.png';
-    
-    img.onload = function() {
-      // Pulisce il canvas prima di disegnare per sicurezza
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Proporziona l'immagine per farla stare perfettamente nel riquadro della firma
-      const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
-      const x = (canvas.width - img.width * ratio) / 2;
-      const y = (canvas.height - img.height * ratio) / 2;
-      
-      ctx.drawImage(img, x, y, img.width * ratio, img.height * ratio);
-    };
-  }
-});
-
 </script>
+
 
 </body>
 </html>
