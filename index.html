@@ -561,6 +561,14 @@ window.onload = function () {
 
   setupCanvases();
 
+  // NASCONDI SCHERMATA DI CARICAMENTO CON UN PICCOLO RITARDO PER FLUIDITÀ
+  setTimeout(() => {
+    const loader = document.getElementById('loader-screen');
+    if (loader) {
+      loader.classList.add('hidden');
+    }
+  }, 400);
+
   if ('serviceWorker' in navigator) {
     let newWorker;
 
