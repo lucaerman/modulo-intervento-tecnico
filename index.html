@@ -545,92 +545,90 @@ function setupCanvases() {
   });
   loadFirmaTecnico();
 }
+    window.onload = function () {
+      const oggi = new Date();
+      const giorno = String(oggi.getDate()).padStart(2, '0');
+      const mese = String(oggi.getMonth() + 1).padStart(2, '0');
+      const anno = oggi.getFullYear();
 
-window.onload = function () {
-  const oggi = new Date();
-  const giorno = String(oggi.getDate()).padStart(2, '0');
-  const mese = String(oggi.getMonth() + 1).padStart(2, '0');
-  const anno = oggi.getFullYear();
+      const dataFormattata = `${giorno}/${mese}/${anno}`;
 
-  const dataFormattata = `${giorno}/${mese}/${anno}`;
-
-  const inputData = document.getElementById('data-intervento');
-  if (inputData) {
-    inputData.value = dataFormattata;
-  }
-
-  setupCanvases();
-
-  // NASCONDI SCHERMATA DI CARICAMENTO CON UN PICCOLO RITARDO PER FLUIDITÀ
-  setTimeout(() => {
-    const loader = document.getElementById('loader-screen');
-    if (loader) {
-      loader.classList.add('hidden');
-    }
-  }, 400);
-
-if ('serviceWorker' in navigator) {
-  let newWorker;
-
-  navigator.serviceWorker.register('./sw.js')
-    .then(reg => {
-      console.log('Service Worker OK');
-
-      // Se c'è già un aggiornamento pronto scaricato in precedenza
-      if (reg.waiting) {
-        newWorker = reg.waiting;
-        mostraNotificaAggiornamento(newWorker);
+      const inputData = document.getElementById('data-intervento');
+      if (inputData) {
+        inputData.value = dataFormattata;
       }
 
-      // Quando viene rilevato un nuovo aggiornamento durante l'uso
-      reg.addEventListener('updatefound', () => {
-        newWorker = reg.installing;
-        
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+      setupCanvases();
+
+      // Nascondi schermata di caricamento
+      setTimeout(nascondiLoader, 300);
+    }; // <-- QUESTA CHIUSURA ERA MANCANTE O POSIZIONATA ERRONEAMENTE
+
+    // Paracadute di sicurezza: rimuove sempre il loader entro 1.5s
+    setTimeout(nascondiLoader, 1500);
+
+    /* =========================================================
+       SERVICE WORKER (Fuori da window.onload)
+    ========================================================= */
+
+    if ('serviceWorker' in navigator) {
+      let newWorker;
+
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => {
+          console.log('Service Worker OK');
+
+          if (reg.waiting) {
+            newWorker = reg.waiting;
             mostraNotificaAggiornamento(newWorker);
           }
-        });
+
+          reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                mostraNotificaAggiornamento(newWorker);
+              }
+            });
+          });
+        })
+        .catch(err => console.log('SW errore:', err));
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          window.location.reload();
+          refreshing = true;
+        }
       });
-    })
-    .catch(err => console.log('SW errore:', err));
-
-  // Ricarica la pagina in automatico dopo che il Service Worker si è aggiornato
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) {
-      window.location.reload();
-      refreshing = true;
     }
-  });
-}
 
-// Funzione per il banner grafico personalizzato
-function mostraNotificaAggiornamento(worker) {
-  // Evita di creare più banner se la funzione viene chiamata due volte
-  if (document.getElementById('banner-aggiornamento')) return;
+    function mostraNotificaAggiornamento(worker) {
+      if (document.getElementById('banner-aggiornamento')) return;
 
-  const banner = document.createElement('div');
-  banner.id = 'banner-aggiornamento';
-  banner.innerHTML = `
-    <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                background: #1d1d1f; color: #ffffff; padding: 14px 20px; border-radius: 10px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 99999; display: flex; 
-                align-items: center; gap: 15px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; width: 90%; max-width: 400px;">
-      <span style="flex-grow: 1; font-size: 14px;">Nuova versione disponibile!</span>
-      <button id="btn-aggiorna" style="background: #28a745; color: white; border: none; 
-               padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
-        Aggiorna
-      </button>
-    </div>
-  `;
-  
-  document.body.appendChild(banner);
+      const banner = document.createElement('div');
+      banner.id = 'banner-aggiornamento';
+      banner.innerHTML = `
+        <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+                    background: #1d1d1f; color: #ffffff; padding: 14px 20px; border-radius: 10px; 
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 99999; display: flex; 
+                    align-items: center; gap: 15px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; width: 90%; max-width: 400px;">
+          <span style="flex-grow: 1; font-size: 14px;">Nuova versione disponibile!</span>
+          <button id="btn-aggiorna" style="background: #28a745; color: white; border: none; 
+                   padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
+            Aggiorna
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(banner);
 
-  document.getElementById('btn-aggiorna').addEventListener('click', () => {
-    worker.postMessage({ action: 'skipWaiting' });
-  });
-}
+      document.getElementById('btn-aggiorna').addEventListener('click', () => {
+        worker.postMessage({ action: 'skipWaiting' });
+      });
+    }
+
 
 /* =========================================================
    ROTAZIONE TABLET / RESIZE
