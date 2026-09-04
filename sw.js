@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rapporto-tecnico-v65';
+const CACHE_NAME = 'rapporto-tecnico-v66';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
