@@ -569,50 +569,57 @@ window.onload = function () {
     }
   }, 400);
 
-  if ('serviceWorker' in navigator) {
-    let newWorker;
+if ('serviceWorker' in navigator) {
+  let newWorker;
 
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('Service Worker OK');
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => {
+      console.log('Service Worker OK');
 
-        if (reg.waiting) {
-          newWorker = reg.waiting;
-          mostraNotificaAggiornamento(newWorker);
-        }
-
-        reg.addEventListener('updatefound', () => {
-          newWorker = reg.installing;
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              mostraNotificaAggiornamento(newWorker);
-            }
-          });
-        });
-      })
-      .catch(err => console.log('SW errore:', err));
-
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        window.location.reload();
-        refreshing = true;
+      // Se c'è già un aggiornamento pronto scaricato in precedenza
+      if (reg.waiting) {
+        newWorker = reg.waiting;
+        mostraNotificaAggiornamento(newWorker);
       }
-    });
-  }
-};
 
+      // Quando viene rilevato un nuovo aggiornamento durante l'uso
+      reg.addEventListener('updatefound', () => {
+        newWorker = reg.installing;
+        
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            mostraNotificaAggiornamento(newWorker);
+          }
+        });
+      });
+    })
+    .catch(err => console.log('SW errore:', err));
+
+  // Ricarica la pagina in automatico dopo che il Service Worker si è aggiornato
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      window.location.reload();
+      refreshing = true;
+    }
+  });
+}
+
+// Funzione per il banner grafico personalizzato
 function mostraNotificaAggiornamento(worker) {
+  // Evita di creare più banner se la funzione viene chiamata due volte
+  if (document.getElementById('banner-aggiornamento')) return;
+
   const banner = document.createElement('div');
+  banner.id = 'banner-aggiornamento';
   banner.innerHTML = `
     <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                background: #333; color: #fff; padding: 15px 20px; border-radius: 8px; 
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9999; display: flex; 
-                align-items: center; gap: 15px; font-family: sans-serif; width: 90%; max-width: 400px;">
-      <span style="flex-grow: 1; font-size: 14px;">Nuovo aggiornamento disponibile!</span>
+                background: #1d1d1f; color: #ffffff; padding: 14px 20px; border-radius: 10px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 99999; display: flex; 
+                align-items: center; gap: 15px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; width: 90%; max-width: 400px;">
+      <span style="flex-grow: 1; font-size: 14px;">Nuova versione disponibile!</span>
       <button id="btn-aggiorna" style="background: #28a745; color: white; border: none; 
-               padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+               padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
         Aggiorna
       </button>
     </div>
